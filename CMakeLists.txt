@@ -127,7 +127,7 @@ cmake_minimum_required(VERSION 2.8.12.2)
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 # Project name.
-project(Chiika)
+project(ChiikaCEF)
 
 # Use folders in the resulting project files.
 set_property(GLOBAL PROPERTY OS_FOLDERS ON)
@@ -170,6 +170,7 @@ include("macros")
 
 # Source include directory.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Allow C++ programs to use stdint.h macros specified in the C99 standard that
 # aren't in the C++ standard (e.g. UINT8_MAX, INT64_MIN, etc).
@@ -501,6 +502,9 @@ if(OS_WINDOWS)
   endif()
 endif()
 
+set(CHIIKA_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Chiika/ChiikaApi/ChiikaAPI")
+add_subdirectory(Chiika/ChiikaApi)
+include_directories(${CHIIKA_INCLUDE_DIR})
 
 #
 # Post-configuration actions.
@@ -524,9 +528,10 @@ set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CEF_LINKER_FLAGS_RELEASE} ${CEF_SHARED_
 #
 # Include target subdirectories.
 #
-
 add_subdirectory(libcef_dll)
 add_subdirectory(Chiika)
+
+
 
 
 #

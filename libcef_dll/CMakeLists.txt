@@ -477,7 +477,7 @@ set(LIBCEF_WRAPPER_SRCS
   )
 source_group(libcef_dll\\\\wrapper FILES ${LIBCEF_WRAPPER_SRCS})
 
-add_library(libcef_dll_wrapper
+add_library(libcef_dll_wrapper STATIC
   ${LIBCEF_SRCS}
   ${LIBCEF_BASE_SRCS}
   ${LIBCEF_CPPTOC_SRCS}

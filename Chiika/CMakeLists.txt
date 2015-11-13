@@ -250,7 +250,6 @@ set(CEFCLIENT_RESOURCES_SRCS
   ${CEFCLIENT_RESOURCES_RESOURCES_MAC_ENGLISH_LPROJ_SRCS}
   )
 
-
 #
 # Shared configuration.
 #
@@ -290,7 +289,9 @@ if(OS_LINUX)
   add_executable(${CEF_TARGET} ${CEFCLIENT_SRCS})
   add_dependencies(${CEF_TARGET} libcef_dll_wrapper)
   target_link_libraries(${CEF_TARGET} libcef_lib libcef_dll_wrapper ${CEF_STANDARD_LIBS})
-
+  if(CHIIKA_LIBS)
+    target_link_libraries(${CEF_TARGET} ${CHIIKA_LIBS})
+  endif()
   # Set rpath so that libraries can be placed next to the executable.
   set_target_properties(${CEF_TARGET} PROPERTIES INSTALL_RPATH "$ORIGIN")
   set_target_properties(${CEF_TARGET} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
@@ -342,7 +343,7 @@ if(OS_MACOSX)
   # Helper executable target.
   add_executable(${CEF_HELPER_TARGET} MACOSX_BUNDLE ${CEFCLIENT_HELPER_SRCS})
   add_dependencies(${CEF_HELPER_TARGET} libcef_dll_wrapper)
-  target_link_libraries(${CEF_HELPER_TARGET} libcef_lib libcef_dll_wrapper ${CEF_STANDARD_LIBS})
+  target_link_libraries(${CEF_HELPER_TARGET} libcef_lib libcef_dll_wrapper ChiikaApi ${CEF_STANDARD_LIBS})
   set_target_properties(${CEF_HELPER_TARGET} PROPERTIES
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/helper-Info.plist
     )
@@ -353,7 +354,7 @@ if(OS_MACOSX)
   # Main executable target.
   add_executable(${CEF_TARGET} MACOSX_BUNDLE ${CEFCLIENT_RESOURCES_SRCS} ${CEFCLIENT_SRCS})
   add_dependencies(${CEF_TARGET} libcef_dll_wrapper "${CEF_HELPER_TARGET}")
-  target_link_libraries(${CEF_TARGET} libcef_lib libcef_dll_wrapper ${CEF_STANDARD_LIBS} "-framework OpenGL")
+  target_link_libraries(${CEF_TARGET} libcef_lib libcef_dll_wrapper ChiikaApi ${CEF_STANDARD_LIBS} "-framework OpenGL")
   set_target_properties(${CEF_TARGET} PROPERTIES
     RESOURCE "${CEFCLIENT_RESOURCES_SRCS}"
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/Info.plist
@@ -404,7 +405,7 @@ if(OS_WINDOWS)
   # Executable target.
   add_executable(${CEF_TARGET} WIN32 ${CEFCLIENT_SRCS})
   add_dependencies(${CEF_TARGET} libcef_dll_wrapper)
-  target_link_libraries(${CEF_TARGET} libcef_lib libcef_dll_wrapper ${CEF_STANDARD_LIBS} "glu32.lib" "opengl32.lib")
+  target_link_libraries(${CEF_TARGET} libcef_lib libcef_dll_wrapper ChiikaApi ${CEF_STANDARD_LIBS} "glu32.lib" "opengl32.lib")
 
   if(USE_SANDBOX)
     # Logical target used to link the cef_sandbox library.
@@ -418,4 +419,5 @@ if(OS_WINDOWS)
   # Copy CEF binary and resource files to the target output directory.
   COPY_FILES("${CEF_TARGET}" "${CEF_BINARY_FILES}" "${CEF_BINARY_DIR}" "${CEF_TARGET_OUT_DIR}")
   COPY_FILES("${CEF_TARGET}" "${CEF_RESOURCE_FILES}" "${CEF_RESOURCE_DIR}" "${CEF_TARGET_OUT_DIR}")
+
 endif()

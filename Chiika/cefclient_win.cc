@@ -3,8 +3,9 @@
 // can be found in the LICENSE file.
 
 #include <windows.h>
-
-#include "include/base/cef_scoped_ptr.h"
+#include "Common/Required.h"
+#include "Root/Root.h"
+#include "base/cef_scoped_ptr.h"
 #include "include/cef_command_line.h"
 #include "include/cef_sandbox_win.h"
 #include "Chiika/browser/client_app_browser.h"
@@ -15,6 +16,7 @@
 #include "Chiika/browser/test_runner.h"
 #include "Chiika/common/client_app_other.h"
 #include "Chiika/renderer/client_app_renderer.h"
+
 
 // When generating projects with CMake the CEF_USE_SANDBOX value will be defined
 // automatically if using the required compiler version. Pass -DUSE_SANDBOX=OFF
@@ -29,100 +31,112 @@
 #endif
 
 namespace client {
-namespace {
+	namespace {
 
-int RunMain(HINSTANCE hInstance, int nCmdShow) {
-  // Enable High-DPI support on Windows 7 or newer.
-  CefEnableHighDPISupport();
+		int RunMain(HINSTANCE hInstance,int nCmdShow) {
+			// Enable High-DPI support on Windows 7 or newer.
+			CefEnableHighDPISupport();
 
-  CefMainArgs main_args(hInstance);
+			CefMainArgs main_args(hInstance);
 
 
 
-  void* sandbox_info = NULL;
+			void* sandbox_info = NULL;
 
 #if defined(CEF_USE_SANDBOX)
-  // Manage the life span of the sandbox information object. This is necessary
-  // for sandbox support on Windows. See cef_sandbox_win.h for complete details.
-  CefScopedSandboxInfo scoped_sandbox;
-  sandbox_info = scoped_sandbox.sandbox_info();
+			// Manage the life span of the sandbox information object. This is necessary
+			// for sandbox support on Windows. See cef_sandbox_win.h for complete details.
+			CefScopedSandboxInfo scoped_sandbox;
+			sandbox_info = scoped_sandbox.sandbox_info();
 #endif
 
-  // Parse command-line arguments.
-  CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
-  command_line->InitFromString(::GetCommandLineW());
+			// Parse command-line arguments.
+			CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
+			command_line->InitFromString(::GetCommandLineW());
 
-  // Create a ClientApp of the correct type.
-  CefRefPtr<CefApp> app;
-  ClientApp::ProcessType process_type = ClientApp::GetProcessType(command_line);
-  if (process_type == ClientApp::BrowserProcess)
-    app = new ClientAppBrowser();
-  else if (process_type == ClientApp::RendererProcess)
-    app = new ClientAppRenderer();
-  else if (process_type == ClientApp::OtherProcess)
-    app = new ClientAppOther();
+			// Create a ClientApp of the correct type.
+			CefRefPtr<CefApp> app;
+			ClientApp::ProcessType process_type = ClientApp::GetProcessType(command_line);
+			if(process_type == ClientApp::BrowserProcess)
+				app = new ClientAppBrowser();
+			else if(process_type == ClientApp::RendererProcess)
+				app = new ClientAppRenderer();
+			else if(process_type == ClientApp::OtherProcess)
+				app = new ClientAppOther();
 
-  // Execute the secondary process, if any.
-  int exit_code = CefExecuteProcess(main_args, app, sandbox_info);
-  if (exit_code >= 0)
-    return exit_code;
+			// Execute the secondary process, if any.
+			int exit_code = CefExecuteProcess(main_args,app,sandbox_info);
+			if(exit_code >= 0)
+				return exit_code;
 
-  // Create the main context object.
-  scoped_ptr<MainContextImpl> context(new MainContextImpl(command_line, true));
+			// Create the main context object.
+			scoped_ptr<MainContextImpl> context(new MainContextImpl(command_line,true));
 
-  CefSettings settings;
+			CefSettings settings;
 
 #if !defined(CEF_USE_SANDBOX)
-  settings.no_sandbox = true;
+			settings.no_sandbox = true;
 #endif
 
-  // Populate the settings based on command line arguments.
-  context->PopulateSettings(&settings);
-  settings.multi_threaded_message_loop = true;
-  // Create the main message loop object.
-  scoped_ptr<MainMessageLoop> message_loop;
-  if (settings.multi_threaded_message_loop)
-    message_loop.reset(new MainMessageLoopMultithreadedWin);
-  else
-    message_loop.reset(new MainMessageLoopStd);
+			// Populate the settings based on command line arguments.
+			context->PopulateSettings(&settings);
+			settings.multi_threaded_message_loop = true;
+			// Create the main message loop object.
+			scoped_ptr<MainMessageLoop> message_loop;
+			if(settings.multi_threaded_message_loop)
+				message_loop.reset(new MainMessageLoopMultithreadedWin);
+			else
+				message_loop.reset(new MainMessageLoopStd);
 
-  // Initialize CEF.
-  context->Initialize(main_args, settings, app, sandbox_info);
+			// Initialize CEF.
+			context->Initialize(main_args,settings,app,sandbox_info);
 
-  // Register scheme handlers.
-  test_runner::RegisterSchemeHandlers();
+			// Register scheme handlers.
+			test_runner::RegisterSchemeHandlers();
 
-  // Create the first window.
-  context->GetRootWindowManager()->CreateRootWindow(
-      false,             // Show controls.
-      false,
-      CefRect(),        // Use default system size.
-	  "http://www.google.com");   // Use default URL.
+			// Create the first window.
+			context->GetRootWindowManager()->CreateRootWindow(
+				false,             // Show controls.
+				false,
+				CefRect(),        // Use default system size.
+				"http://www.google.com");   // Use default URL.
 
-  // Run the message loop. This will block until Quit() is called by the
-  // RootWindowManager after all windows have been destroyed.
-  int result = message_loop->Run();
+			ChiikaApi::Root r;
+			r.Initialize("D:\\Chiika\\ChiikaCef\\Msvc\\Chiika\\Debug");
 
-  // Shut down CEF.
-  context->Shutdown();
 
-  // Release objects in reverse order of creation.
-  message_loop.reset();
-  context.reset();
 
-  return result;
-}
 
-}  // namespace
+
+
+
+
+
+			// Run the message loop. This will block until Quit() is called by the
+			// RootWindowManager after all windows have been destroyed.
+			int result = message_loop->Run();
+
+			r.Destroy();
+			// Shut down CEF.
+			context->Shutdown();
+
+			// Release objects in reverse order of creation.
+			message_loop.reset();
+			context.reset();
+
+			return result;
+		}
+
+	}  // namespace
 }  // namespace client
 
 
 // Program entry point function.
 int APIENTRY wWinMain(HINSTANCE hInstance,
-                      HINSTANCE hPrevInstance,
-                      LPTSTR    lpCmdLine,
-                      int       nCmdShow) {
-  UNREFERENCED_PARAMETER(hPrevInstance);
-  UNREFERENCED_PARAMETER(lpCmdLine);
-  return client::RunMain(hInstance, nCmdShow);
+	HINSTANCE hPrevInstance,
+	LPTSTR    lpCmdLine,
+	int       nCmdShow) {
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(lpCmdLine);
+	return client::RunMain(hInstance,nCmdShow);
 }
