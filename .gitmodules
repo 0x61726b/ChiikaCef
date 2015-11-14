@@ -1,3 +1,4 @@
-[submodule "Chiika/ChiikaApi"]
-	path = Chiika/ChiikaApi
+[submodule "ChiikaApi"]
+	path = ChiikaApi
 	url = https://github.com/arkenthera/ChiikaApi.git
+	

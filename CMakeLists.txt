@@ -168,9 +168,13 @@ endif()
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 include("macros")
 
+set(CHIIKA_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ChiikaApi/ChiikaAPI")
+
 # Source include directory.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+add_subdirectory(ChiikaApi/ChiikaAPI/ThirdParty/curl)
+add_subdirectory(ChiikaApi)
 
 # Allow C++ programs to use stdint.h macros specified in the C99 standard that
 # aren't in the C++ standard (e.g. UINT8_MAX, INT64_MIN, etc).
@@ -461,6 +465,7 @@ if(OS_WINDOWS)
     devtools_resources.pak
     icudtl.dat
     locales
+    UI
     )
 
   # Configure use of the sandbox.
@@ -502,9 +507,6 @@ if(OS_WINDOWS)
   endif()
 endif()
 
-set(CHIIKA_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Chiika/ChiikaApi/ChiikaAPI")
-add_subdirectory(Chiika/ChiikaApi)
-include_directories(${CHIIKA_INCLUDE_DIR})
 
 #
 # Post-configuration actions.
@@ -530,7 +532,7 @@ set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CEF_LINKER_FLAGS_RELEASE} ${CEF_SHARED_
 #
 add_subdirectory(libcef_dll)
 add_subdirectory(Chiika)
-
+include_directories(${CHIIKA_INCLUDE_DIR})
 
 
 

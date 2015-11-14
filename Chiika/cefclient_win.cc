@@ -3,8 +3,6 @@
 // can be found in the LICENSE file.
 
 #include <windows.h>
-#include "Common/Required.h"
-#include "Root/Root.h"
 #include "base/cef_scoped_ptr.h"
 #include "include/cef_command_line.h"
 #include "include/cef_sandbox_win.h"
@@ -16,6 +14,10 @@
 #include "Chiika/browser/test_runner.h"
 #include "Chiika/common/client_app_other.h"
 #include "Chiika/renderer/client_app_renderer.h"
+
+#include "Common/Required.h"
+#include "Root/Root.h"
+#include "Database\LocalDataManager.h"
 
 
 // When generating projects with CMake the CEF_USE_SANDBOX value will be defined
@@ -78,6 +80,9 @@ namespace client {
 			settings.no_sandbox = true;
 #endif
 
+
+
+
 			// Populate the settings based on command line arguments.
 			context->PopulateSettings(&settings);
 			settings.multi_threaded_message_loop = true;
@@ -94,15 +99,27 @@ namespace client {
 			// Register scheme handlers.
 			test_runner::RegisterSchemeHandlers();
 
+			ChiikaApi::Root r;
+			r.Initialize("D:\\Chiika\\ChiikaCef\\Msvc\\Chiika\\Debug");
+
 			// Create the first window.
 			context->GetRootWindowManager()->CreateRootWindow(
 				false,             // Show controls.
 				false,
 				CefRect(),        // Use default system size.
-				"http://www.google.com");   // Use default URL.
+				"D:\\Chiika\\ChiikaCef\\Msvc\\Chiika\\Debug\\UI\\index.html");   // Use default URL.
 
-			ChiikaApi::Root r;
-			r.Initialize("D:\\Chiika\\ChiikaCef\\Msvc\\Chiika\\Debug");
+
+
+			ChiikaApi::UserInfo ui;
+			ui.UserName = "arkenthera";
+			ui.Pass = "123asd456";
+			r.m_pLocalData->SetUserInfo(ui);
+
+			/*GetAnimeListRequest req(NULL);
+			req.Initialize();
+			req.SetOptions();
+			req.Initiate();*/
 
 
 

@@ -1,0 +1,36 @@
+.coverImage {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 20%;
+    z-index: 1;
+    column-fill: auto;
+    background-image: url("cover.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+.coverImageTint {
+    z-index: 1;
+    height: inherit;
+    width: 100%;
+    position: fixed;
+    overflow: auto;
+    top: 0px;
+    left: 0px;
+    background: rgba(5, 64, 134, 0.4);
+}
+
+.toTop {
+    z-index: 5;
+}
+
+.toTransparent {
+    background-color: rgba(0, 0, 0, 0.0);
+}
+
+.toAlmostTransparent {
+    background-color: rgba(0, 0, 0, 0.3);
+}

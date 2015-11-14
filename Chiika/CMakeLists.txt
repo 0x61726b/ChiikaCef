@@ -421,3 +421,5 @@ if(OS_WINDOWS)
   COPY_FILES("${CEF_TARGET}" "${CEF_RESOURCE_FILES}" "${CEF_RESOURCE_DIR}" "${CEF_TARGET_OUT_DIR}")
 
 endif()
+
+include_directories(${CHIIKA_INCLUDE_DIR})
