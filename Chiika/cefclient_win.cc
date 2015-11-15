@@ -107,7 +107,7 @@ namespace client {
 				false,             // Show controls.
 				false,
 				CefRect(),        // Use default system size.
-				"D:\\Chiika\\ChiikaCef\\Msvc\\Chiika\\Debug\\UI\\index.html");   // Use default URL.
+				"http://localhost:8000");   // Use default URL.
 
 
 

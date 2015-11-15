@@ -64,6 +64,7 @@ scoped_refptr<RootWindow> RootWindowManager::CreateRootWindow(
   CefBrowserSettings settings;
   MainContext::Get()->PopulateBrowserSettings(&settings);
 
+
   scoped_refptr<RootWindow> root_window = RootWindow::Create();
   root_window->Init(this, with_controls, with_osr, bounds, settings,
                     url.empty() ? MainContext::Get()->GetMainURL() : url);

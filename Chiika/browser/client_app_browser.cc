@@ -46,8 +46,10 @@ void ClientAppBrowser::OnBeforeCommandLineProcessing(
       // it can be set via the command-line using `--off-screen-frame-rate=XX`.
       // See https://bitbucket.org/chromiumembedded/cef/issues/1368 for details.
       command_line->AppendSwitch("enable-begin-frame-scheduling");
-    }
 
+	  
+    }
+	command_line->AppendSwitch("allow-file-access-from-files");
     DelegateSet::iterator it = delegates_.begin();
     for (; it != delegates_.end(); ++it)
       (*it)->OnBeforeCommandLineProcessing(this, command_line);
