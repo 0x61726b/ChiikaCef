@@ -114,7 +114,7 @@ namespace client {
 				false,             // Show controls.
 				false,
 				CefRect(),        // Use default system size.
-				"http://localhost:8000");   // Use default URL.
+				dir + "/UI/Index.html");   // Use default URL.
 
 
 
