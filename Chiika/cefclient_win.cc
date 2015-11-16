@@ -99,8 +99,15 @@ namespace client {
 			// Register scheme handlers.
 			test_runner::RegisterSchemeHandlers();
 
+			char szFileName[MAX_PATH];
+
+			GetModuleFileNameA(hInstance, szFileName, MAX_PATH);
+
+			std::string pathToExecutable = szFileName;
+			std::string dir = pathToExecutable.substr(0, pathToExecutable.find_last_of("\\"));
+
 			ChiikaApi::Root r;
-			r.Initialize("D:\\Chiika\\ChiikaCef\\Msvc\\Chiika\\Debug");
+			r.Initialize(dir);
 
 			// Create the first window.
 			context->GetRootWindowManager()->CreateRootWindow(

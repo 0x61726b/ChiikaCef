@@ -1,0 +1,20 @@
+<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable" style="width:100%;margin-top: -1px;">
+    <thead>
+        <tr>
+            <th class="mdl-data-table__cell--non-numeric">Title</th>
+            <th>Progress</th>
+            <th>Type</th>
+            <th>Score</th>
+            <th>Season</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="anime in ctrl.animeList">
+            <td class="mdl-data-table__cell--non-numeric">{{anime.title}}</td>
+            <td>{{anime.progress}}</td>
+            <td>{{anime.type}}</td>
+            <td>{{anime.progress}}</td>
+            <td>{{anime.season}}</td>
+        </tr>
+    </tbody>
+</table>

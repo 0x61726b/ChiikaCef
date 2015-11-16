@@ -1,0 +1,40 @@
+<div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--1-col"></div>
+    <div class="mdl-cell mdl-cell--10-col mdl-card mdl-shadow--2dp">
+        <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+            <div class="mdl-tabs__tab-bar" style="background-color:#B0BEC5;">
+                <a href="#reading-panel" class="mdl-tabs__tab is-active ">
+                    <span class="mdl-badge" data-badge="{{ctrl.readingList.length}}">Reading</span>
+                </a>
+                <a href="#completed-panel" class="mdl-tabs__tab">
+                    <span class="mdl-badge" data-badge="{{ctrl.completedList.length}}">Completed</span>
+                </a>
+                <a href="#dropped-panel" class="mdl-tabs__tab">
+                    <span class="mdl-badge" data-badge="{{ctrl.droppedList.length}}">Dropped</span>
+                </a>
+                <a href="#onhold-panel" class="mdl-tabs__tab">
+                    <span class="mdl-badge" data-badge="{{ctrl.onholdList.length}}">On Hold</span>
+                </a>
+                <a href="#plantoread-panel" class="mdl-tabs__tab">
+                    <span class="mdl-badge" data-badge="{{ctrl.plantoreadList.length}}">Plan to Read</span>
+                </a>
+            </div>
+            <div class="mdl-tabs__panel is-active" id="reading-panel">
+            <manga-table-dir manga-list="ctrl.readingList"></manga-table-dir>
+        </div>
+        <div class="mdl-tabs__panel" id="completed-panel">
+        <manga-table-dir manga-list="ctrl.completedList"></manga-table-dir>
+    </div>
+    <div class="mdl-tabs__panel" id="dropped-panel">
+        <manga-table-dir manga-list="ctrl.droppedList"></manga-table-dir>
+    </div>
+    <div class="mdl-tabs__panel" id="onhold-panel">
+        <manga-table-dir manga-list="ctrl.onholdList"></manga-table-dir>
+    </div>    
+    <div class="mdl-tabs__panel" id="plantoread-panel">
+        <manga-table-dir manga-list="ctrl.plantowatchList"></manga-table-dir>
+    </div>     
+</div>
+</div>
+<div class="mdl-cell mdl-cell--1-col"></div>
+</div>
