@@ -17,7 +17,7 @@
 #define __Chiika_browser_delegate_h__
 //----------------------------------------------------------------------------
 #include "Chiika\browser\client_handler.h"
-#include "Request\RequestInterface.h"
+#include "Request\RequestListener.h"
 //----------------------------------------------------------------------------
 namespace client
 {
