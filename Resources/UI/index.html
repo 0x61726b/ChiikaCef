@@ -18,10 +18,13 @@
 	
 	<body style="background-color:#f0f0f0" ng-app="chiikaAngular">
 						<script>
-						window.ChiikaTesto(function(t)
+						window.ChiikaVerifyUser(function(t)
 						{
 							console.log(t);
-						},"test1","test2");
+						},function(error)
+						{
+							console.log("Error " + error);
+						});
 
 						var ChiikaApp =
 						{

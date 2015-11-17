@@ -28,12 +28,61 @@ namespace
 {
 	namespace Chiika
 	{
-		void FillCallbackMap(const std::string& name, const CefRefPtr<CefV8Value>& function)
+		void FillCallbackMap(const std::string& name,const CefRefPtr<CefV8Value>& function)
 		{
-			auto s = callback_map_.insert(std::make_pair(name, std::make_pair(function, CefV8Context::GetCurrentContext())));
-			if (s.second == false)
+			auto s = callback_map_.insert(std::make_pair(name,std::make_pair(function,CefV8Context::GetCurrentContext())));
+			if(s.second == false)
 			{
-				callback_map_[name] = std::make_pair(function, CefV8Context::GetCurrentContext());
+				callback_map_[name] = std::make_pair(function,CefV8Context::GetCurrentContext());
+			}
+		}
+		void ExecuteCallback(const CefRefPtr<CefProcessMessage> message,const std::string& name)
+		{
+			if(!callback_map_.empty())
+			{
+				CallbackMap::const_iterator it = callback_map_.find(name);
+				if(it != callback_map_.end())
+				{
+					CefRefPtr<CefV8Value> callback = it->second.first;
+					CefRefPtr<CefV8Context> context = it->second.second;
+
+					if(context.get() && context->Enter())
+					{
+						CefRefPtr<CefV8Value> object = CefV8Value::CreateObject(NULL);
+						CefV8ValueList args;
+						CefRefPtr<CefV8Exception> exception;
+						CefRefPtr<CefListValue> message_args = message->GetArgumentList();
+
+						CefRefPtr<CefListValue> list = CefListValue::Create();
+
+						CefRefPtr<CefV8Value> v8list = CefV8Value::CreateArray(list->GetSize());
+
+
+						
+						for(size_t i = 1; i < message_args->GetSize();i++)
+							list->SetValue(i-1,message_args->GetValue(i));
+
+						::Chiika::SetList(list,v8list);
+						args.push_back(v8list);
+
+						if(callback->ExecuteFunctionWithContext(context,object,args))
+						{
+							//MessageBox(0,L"ExecuteFunctionWithContext",L"success",0);
+							std::string log = message->GetName();
+							log.append(" ExecuteFunctionWithContext Succeeded");
+							LOG(INFO) << log;
+						}
+						else
+						{
+							if(callback->HasException())
+							{
+								std::string log = message->GetName();
+								log.append(" has exception.");
+								LOG(INFO) << log;
+							}
+						}
+					}
+				}
 			}
 		}
 		ChiV8::ChiV8()
@@ -42,32 +91,48 @@ namespace
 		}
 
 		bool ChiV8::Execute(
-			const CefString &name, CefRefPtr<CefV8Value> object,
+			const CefString &name,CefRefPtr<CefV8Value> object,
 			const CefV8ValueList &arguments,
 			CefRefPtr<CefV8Value> &retval,
 			CefString &exception)
 		{
 			CefRefPtr<CefBrowser> browser = CefV8Context::GetCurrentContext()->GetBrowser();
 
-			if (!browser)
+			if(!browser)
 				return false;
 
-			if (arguments.size() > 0 && arguments[0]->IsFunction())
+			if(arguments.size() > 0 && arguments[0]->IsFunction())
 			{
 
 				CefRefPtr<CefV8Context> context = CefV8Context::GetCurrentContext();
-				callback_map_.insert(CallbackMap::value_type(name,
+
+				std::string successCallback = name;
+				successCallback.append(kSuccessCallback);
+				//Success callback
+				callback_map_.insert(CallbackMap::value_type(successCallback,
 					std::make_pair(arguments[0],context)));
 
+				if(arguments[1]->IsFunction())
+				{
+					std::string errorCallback = name;
+					errorCallback.append(kErrorCallback);
+					//Error callback
+					callback_map_.insert(CallbackMap::value_type(errorCallback,
+						std::make_pair(arguments[1],context)));
+				}
+
+				//Other arguments
 				CefRefPtr<CefProcessMessage> message = CefProcessMessage::Create(name);
 				CefRefPtr<CefListValue> message_args = message->GetArgumentList();
 
-				::Chiika::SetListValue(message_args, 0, CefV8Value::CreateInt(messageId));
+				::Chiika::SetListValue(message_args,0,CefV8Value::CreateInt(messageId));
 
-				for (size_t i = 1; i < arguments.size(); i++)
-					::Chiika::SetListValue(message_args, i, arguments[i]);
+				for(size_t i = 1; i < arguments.size(); i++)
+					::Chiika::SetListValue(message_args,i,arguments[i]);
 
-				browser->SendProcessMessage(PID_BROWSER, message);
+
+				//Pass it to the browser process to do the processing there
+				browser->SendProcessMessage(PID_BROWSER,message);
 
 				return true;
 			}
@@ -89,12 +154,12 @@ namespace
 
 				int functionListSize = jsCpp.size();
 
-				if (functionListSize > 0)
+				if(functionListSize > 0)
 				{
-					for (std::map<std::string, enum JsEnum>::iterator iter = jsCpp.begin(); iter != jsCpp.end(); iter++)
+					for(std::map<std::string,enum JsEnum>::iterator iter = jsCpp.begin(); iter != jsCpp.end(); iter++)
 					{
 						object->SetValue(kNamespace + iter->first,
-							CefV8Value::CreateFunction(kNamespace + iter->first, handler),
+							CefV8Value::CreateFunction(kNamespace + iter->first,handler),
 							V8_PROPERTY_ATTRIBUTE_READONLY);
 					}
 				}
@@ -105,44 +170,19 @@ namespace
 				CefProcessId source_process,
 				CefRefPtr<CefProcessMessage> message) override
 			{
-				if (message->GetName() == InNamespace(kTestFunc))
+				CEF_REQUIRE_RENDERER_THREAD();
+
+				CefRefPtr<CefListValue> message_args = message->GetArgumentList();
+				bool result = message_args->GetBool(0);
+				if(result) //Meaning successs callback
 				{
-					if (CefCurrentlyOn(TID_RENDERER))
-					{
-						if (!callback_map_.empty())
-						{
-							CallbackMap::const_iterator it = callback_map_.find(InNamespace(kTestFunc));
-							if (it != callback_map_.end())
-							{
-								CefRefPtr<CefV8Value> callback = it->second.first;
-								CefRefPtr<CefV8Context> context = it->second.second;
-
-								if (context.get() && context->Enter())
-								{
-									CefRefPtr<CefV8Value> object = CefV8Value::CreateObject(NULL);
-									CefV8ValueList args;
-									CefRefPtr<CefV8Exception> exception;
-									CefRefPtr<CefListValue> list = CefListValue::Create();
-									list->SetString(0, "1");
-									list->SetString(1, "2");
-									list->SetString(2, "3");
-									list->SetString(3, "4");
-									CefRefPtr<CefV8Value> v8list = CefV8Value::CreateArray(4);
-									::Chiika::SetList(list, v8list);
-									args.push_back(v8list);
-									
-									if (callback->ExecuteFunctionWithContext(context, object, args))
-									{
-										//MessageBox(0,L"ExecuteFunctionWithContext",L"success",0);
-										LOG(INFO) << kTestFunc << "ExecuteFunctionWithContext Succeeded";
-									}
-								}
-							}
-						}
-					}
-
-
+					ExecuteCallback(message,CefString(message->GetName().ToString() + kSuccessCallback));
 				}
+				else
+				{
+					ExecuteCallback(message,CefString(message->GetName().ToString() + kErrorCallback));
+				}
+
 				return false;
 			}
 

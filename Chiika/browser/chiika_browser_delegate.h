@@ -17,12 +17,13 @@
 #define __Chiika_browser_delegate_h__
 //----------------------------------------------------------------------------
 #include "Chiika\browser\client_handler.h"
+#include "Request\RequestInterface.h"
 //----------------------------------------------------------------------------
 namespace client
 {
 	namespace Chiika_Browser
 	{
-		class ChiBrowserDelegate : public ClientHandler::ProcessMessageDelegate
+		class ChiBrowserDelegate : public ClientHandler::ProcessMessageDelegate,public ChiikaApi::RequestListener
 		{
 		public:
 			ChiBrowserDelegate();
@@ -33,6 +34,9 @@ namespace client
 				CefProcessId source_process,
 				CefRefPtr<CefProcessMessage> message) OVERRIDE;
 
+			//Listen for ChiikaApi events here
+			virtual void OnSuccess(ChiikaApi::RequestInterface*);
+			virtual void OnError(ChiikaApi::RequestInterface*);
 		private:
 			IMPLEMENT_REFCOUNTING(ChiBrowserDelegate);
 		};

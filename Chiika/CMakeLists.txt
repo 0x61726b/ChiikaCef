@@ -78,6 +78,7 @@ set(CEFCLIENT_COMMON_COMMON_SRCS
   common/scheme_test_common.h
   common/chi_helper.h
   common/chi_helper.cpp
+  common/chi_js_list.h
   )
 source_group(cefclient\\\\common FILES ${CEFCLIENT_COMMON_COMMON_SRCS})
 
@@ -98,8 +99,6 @@ set(CEFCLIENT_RENDERER_RENDERER_SRCS
   renderer/performance_test_tests.cc
   renderer/chiika_v8_handler.h
   renderer/chiika_v8_handler.cpp
-  renderer/chiika_renderer_delegate.h
-  renderer/chiika_renderer_delegate.cpp
   )
 source_group(cefclient\\\\renderer FILES ${CEFCLIENT_RENDERER_RENDERER_SRCS})
 

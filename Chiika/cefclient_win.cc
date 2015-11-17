@@ -114,9 +114,9 @@ namespace client {
 				false,             // Show controls.
 				false,
 				CefRect(),        // Use default system size.
-				dir + "/UI/Index.html");   // Use default URL.
+				context->GetAppWorkingDirectory() + "../../Resources/UI/Index.html");   // Use default URL.
 
-
+			
 
 			ChiikaApi::UserInfo ui;
 			ui.UserName = "arkenthera";

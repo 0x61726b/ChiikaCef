@@ -17,18 +17,23 @@
 #define __Chi_js_list_h__
 //----------------------------------------------------------------------------
 const char kNamespace[] = "Chiika";
+const char kErrorCallback[] = "Error";
+const char kSuccessCallback[] = "Success";
 const char kTestFunc[] = "Testo";
+const char kVerifyUser[] = "VerifyUser";
 
 //Usage
 //All functions will be called as
 //Chiika<FunctionName>(callback,args...)
 static enum JsEnum
 {
-	TestFunc
+	TestFunc,
+	VerifyUser
 };
 static std::map<std::string,JsEnum> jsCpp = 
 {
-	std::make_pair("Testo",TestFunc)
+	std::make_pair("Testo",JsEnum::TestFunc),
+	std::make_pair(kVerifyUser,JsEnum::VerifyUser)
 };
 
 #define InNamespace(x) std::string(kNamespace) + std::string(x)

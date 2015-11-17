@@ -28,6 +28,12 @@ namespace client
 		{
 
 		}
+		void ChiBrowserDelegate::OnSuccess(ChiikaApi::RequestInterface*)
+		{
+		}
+		void ChiBrowserDelegate::OnError(ChiikaApi::RequestInterface*)
+		{
+		}
 		bool ChiBrowserDelegate::OnProcessMessageReceived(
 			CefRefPtr<ClientHandler> handler,
 			CefRefPtr<CefBrowser> browser,
@@ -40,12 +46,47 @@ namespace client
 
 			std::string message_name = message->GetName();
 
-			if (message_name == InNamespace("Testo"))
+
+			if(message_name == InNamespace("Testo"))
 			{
-				
+
 
 			}
-			browser->SendProcessMessage(PID_RENDERER, message);
+
+			if(message_name == InNamespace(kVerifyUser))
+			{
+				bool status = true;
+				if(status)
+				{
+					//Verify success
+					CefRefPtr<CefProcessMessage> browserMessage = CefProcessMessage::Create(CefString(message->GetName()));
+					CefRefPtr<CefListValue> message_args = browserMessage->GetArgumentList();
+
+					message_args->SetBool(0,true);
+
+					CefRefPtr<CefListValue> userInfoList = CefListValue::Create();
+					userInfoList->SetInt(0,45555);
+					userInfoList->SetString(1,"arkenthera");
+
+					
+					message_args->SetList(1,userInfoList);
+					browser->SendProcessMessage(PID_RENDERER,browserMessage);
+				}
+
+				if(!status)
+				{
+					//Verify failed
+					CefRefPtr<CefProcessMessage> browserMessage = CefProcessMessage::Create(CefString(message->GetName()));
+					CefRefPtr<CefListValue> message_args = browserMessage->GetArgumentList();
+
+					message_args->SetBool(0,false);
+
+					std::string errorMsg = "Verifying user failed.";
+					message_args->SetString(1,(errorMsg));
+					browser->SendProcessMessage(PID_RENDERER,browserMessage);
+
+				}
+			}
 			return true;
 		}
 
