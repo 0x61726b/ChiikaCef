@@ -69,6 +69,39 @@ class ClientHandler : public CefClient,
     virtual ~Delegate() {}
   };
 
+  typedef std::set<CefRefPtr<Delegate> > DelegateSet;
+
+  class ProcessMessageDelegate : public virtual CefBase {
+  public:
+	  explicit ProcessMessageDelegate(const char* message_namespace)
+		  : message_namespace_(message_namespace) {}
+	  // Called when a process message is received. Return true if the message was
+	  // handled and should not be passed on to other handlers.
+	  // ProcessMessageDelegates should check for unique message names to avoid
+	  // interfering with each other.
+	  virtual bool OnProcessMessageReceived(
+		  CefRefPtr<ClientHandler> handler,
+		  CefRefPtr<CefBrowser> browser,
+		  CefProcessId source_process,
+		  CefRefPtr<CefProcessMessage> message) {
+		  return false;
+	  }
+
+	  virtual bool IsAcceptedNamespace(std::string message_name) {
+		  return (
+			  message_namespace_
+			  && message_name.find(message_namespace_) == 0);
+	  }
+
+  protected:
+	  const char* message_namespace_;
+  };
+
+  typedef std::set<CefRefPtr<ProcessMessageDelegate> >
+	  ProcessMessageDelegateSet;
+
+  ProcessMessageDelegateSet DelegateSet_;
+
   typedef std::set<CefMessageRouterBrowserSide::Handler*> MessageHandlerSet;
 
   // Constructor may be called on any thread.
@@ -195,6 +228,8 @@ class ClientHandler : public CefClient,
   void OnAfterCreated(CefRefPtr<CefBrowser> browser) OVERRIDE;
   bool DoClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
   void OnBeforeClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
+  
+  static void CreateDelegates(ProcessMessageDelegateSet&);
 
   // CefLoadHandler methods
   void OnLoadingStateChange(CefRefPtr<CefBrowser> browser,
@@ -320,6 +355,7 @@ class ClientHandler : public CefClient,
   // loop mode on Windows.
 
   Delegate* delegate_;
+  
 
   // UI THREAD MEMBERS
   // The following members will only be accessed on the CEF UI thread.

@@ -50,6 +50,7 @@ namespace client {
 			// for sandbox support on Windows. See cef_sandbox_win.h for complete details.
 			CefScopedSandboxInfo scoped_sandbox;
 			sandbox_info = scoped_sandbox.sandbox_info();
+			
 #endif
 
 			// Parse command-line arguments.
@@ -75,13 +76,21 @@ namespace client {
 			scoped_ptr<MainContextImpl> context(new MainContextImpl(command_line,true));
 
 			CefSettings settings;
-
+			settings.log_severity = LOGSEVERITY_INFO;
+			
 #if !defined(CEF_USE_SANDBOX)
 			settings.no_sandbox = true;
 #endif
+			char szFileName[MAX_PATH];
 
+			GetModuleFileNameA(hInstance, szFileName, MAX_PATH);
 
+			std::string pathToExecutable = szFileName;
+			std::string dir = pathToExecutable.substr(0, pathToExecutable.find_last_of("\\"));
 
+			CefString(&settings.cache_path).FromString(dir + "\\Data\\Cache");
+			CefString(&settings.log_file).FromString(dir + "\\ChiikaLOG.txt");
+			
 
 			// Populate the settings based on command line arguments.
 			context->PopulateSettings(&settings);
@@ -96,19 +105,10 @@ namespace client {
 			// Initialize CEF.
 			context->Initialize(main_args,settings,app,sandbox_info);
 
-			// Register scheme handlers.
-			test_runner::RegisterSchemeHandlers();
 
-			char szFileName[MAX_PATH];
-
-			GetModuleFileNameA(hInstance, szFileName, MAX_PATH);
-
-			std::string pathToExecutable = szFileName;
-			std::string dir = pathToExecutable.substr(0, pathToExecutable.find_last_of("\\"));
 
 			ChiikaApi::Root r;
 			r.Initialize(dir);
-
 			// Create the first window.
 			context->GetRootWindowManager()->CreateRootWindow(
 				false,             // Show controls.

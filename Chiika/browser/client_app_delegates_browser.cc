@@ -4,6 +4,8 @@
 
 #include "Chiika/browser/client_app_browser.h"
 
+#include "Chiika/browser/chiika_browser_delegate.h"
+
 #if defined(OS_LINUX)
 #include "Chiika/browser/print_handler_gtk.h"
 #endif
@@ -12,6 +14,7 @@ namespace client {
 
 // static
 void ClientAppBrowser::CreateDelegates(DelegateSet& delegates) {
+	
 }
 
 // static

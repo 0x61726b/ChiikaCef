@@ -34,6 +34,14 @@ class ClientAppBrowser : public ClientApp,
     virtual void OnRenderProcessThreadCreated(
         CefRefPtr<ClientAppBrowser> app,
         CefRefPtr<CefListValue> extra_info) {}
+
+	virtual bool OnProcessMessageReceived(
+		CefRefPtr<ClientAppBrowser> handler,
+		CefRefPtr<CefBrowser> browser,
+		CefProcessId source_process,
+		CefRefPtr<CefProcessMessage> message) {
+		return false;
+	}
   };
 
   typedef std::set<CefRefPtr<Delegate> > DelegateSet;

@@ -56,6 +56,8 @@ set(CEFCLIENT_BROWSER_BROWSER_SRCS
   browser/urlrequest_test.h
   browser/window_test.cc
   browser/window_test.h
+  browser/chiika_browser_delegate.h
+  browser/chiika_browser_delegate.cpp
   )
 source_group(cefclient\\\\browser FILES ${CEFCLIENT_BROWSER_BROWSER_SRCS})
 
@@ -74,6 +76,8 @@ set(CEFCLIENT_COMMON_COMMON_SRCS
   common/client_switches.h
   common/scheme_test_common.cc
   common/scheme_test_common.h
+  common/chi_helper.h
+  common/chi_helper.cpp
   )
 source_group(cefclient\\\\common FILES ${CEFCLIENT_COMMON_COMMON_SRCS})
 
@@ -92,6 +96,10 @@ set(CEFCLIENT_RENDERER_RENDERER_SRCS
   renderer/performance_test.h
   renderer/performance_test_setup.h
   renderer/performance_test_tests.cc
+  renderer/chiika_v8_handler.h
+  renderer/chiika_v8_handler.cpp
+  renderer/chiika_renderer_delegate.h
+  renderer/chiika_renderer_delegate.cpp
   )
 source_group(cefclient\\\\renderer FILES ${CEFCLIENT_RENDERER_RENDERER_SRCS})
 

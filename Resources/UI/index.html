@@ -11,56 +11,38 @@
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 		<link rel="stylesheet" href="resources/chiika.css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		<script src="./js/angular.min.js"></script>
-		<script src="./js/chiika-js-0.1.0-min.js"></script>
-		<script src="./js/chiika-ng-0.1.0-min.js"></script>
+		<!-- <script src="./js/angular.min.js"></script> 
+		// <script src="./js/chiika-js-0.1.0-min.js"></script>
+		// <script src="./js/chiika-ng-0.1.0-min.js"></script> -->
 	</head>
 	
 	<body style="background-color:#f0f0f0" ng-app="chiikaAngular">
-		
-		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-		<script src="resources/material.min.js"></script>
-		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
-			<header class="mdl-layout__header">
-				<div class="mdl-layout__header-row toAlmostTransparent">
-					<!-- Title -->
-					<span class="mdl-layout-title">Chiika</span>
-					<div class="mdl-layout-spacer"></div>
-					<button class="mdl-button mdl-js-button mdl-button--icon">
-					<i class="material-icons">autorenew</i>
-					</button>
-					<button class="mdl-button mdl-js-button mdl-button--icon">
-					<i class="material-icons">settings</i>
-					</button>
-				</div>
-				<!-- Tabs -->
-				<div class="mdl-layout__tab-bar mdl-js-ripple-effect">
-					<a href="#fixed-tab-1" class="mdl-layout__tab is-active">Home</a>
-					<a href="#fixed-tab-2" class="mdl-layout__tab">Anime List</a>
-					<a href="#fixed-tab-3" class="mdl-layout__tab">Manga List</a>
-					<a href="#fixed-tab-4" class="mdl-layout__tab">Calendar</a>
-					<a href="#fixed-tab-5" class="mdl-layout__tab">Recent Updates</a>
-					<a href="#fixed-tab-6" class="mdl-layout__tab">Torrents</a>
-				</div>
-			</header>
-			<main class="mdl-layout__content" id="contentArea">
-			<div class="page-content">
-				<section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
-					<home-page-dir></home-page-dir>
-				</section>
-				<section class="mdl-layout__tab-panel" id="fixed-tab-2">
-					<anime-list-dir></anime-list-dir>
-				</section>
-				<section class="mdl-layout__tab-panel" id="fixed-tab-3">
-					<manga-list-dir></manga-list-dir>
-				</section>
-			</div>
-			</main>
-		</div>
-		<div class="colorThing"></div>
-		
-		
-		
+						<script>
+						window.ChiikaTesto(function(t)
+						{
+							console.log(t);
+						},"test1","test2");
+
+						var ChiikaApp =
+						{
+							testo: function(onSuccess,onFailure)
+							{
+								onSuccess = onSuccess || (function(returnValue) 
+								{
+									console.log(returnValue);
+								});
+								onFailure = onFailure || (function(error_code,reason)
+								{
+
+								});
+								ChiikaTesto(onSuccess,"test","test2");
+							}
+						};
+						$(document).ready((function(window,app)
+						{
+
+						}).bind(null,window,ChiikaApp))
+					</script>		
 	</body>
 	
 </html>
