@@ -125,9 +125,8 @@ namespace
 				CefRefPtr<CefProcessMessage> message = CefProcessMessage::Create(name);
 				CefRefPtr<CefListValue> message_args = message->GetArgumentList();
 
-				::Chiika::SetListValue(message_args,0,CefV8Value::CreateInt(messageId));
 
-				for(size_t i = 1; i < arguments.size(); i++)
+				for(size_t i = 0; i < arguments.size(); i++)
 					::Chiika::SetListValue(message_args,i,arguments[i]);
 
 

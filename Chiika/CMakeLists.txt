@@ -430,3 +430,4 @@ if(OS_WINDOWS)
 endif()
 
 include_directories(${CHIIKA_INCLUDE_DIR})
+include_directories(${CMAKE_BINARY_DIR}/ChiikaApi/ChiikaAPI/ThirdParty/curl/include/curl) #sigh

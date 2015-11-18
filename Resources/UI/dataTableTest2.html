@@ -1,5 +1,4 @@
 <html lang="en" ng-app="chiikaAngular">
-
   <head>
     
     <meta charset="utf-8">
@@ -12,52 +11,62 @@
     <link rel="stylesheet" href="http://rawgit.com/daniel-nagy/md-data-table/master/dist/md-data-table.css">
     
   </head>
-
   <body layout="column">
     
     <md-toolbar>
-      <div class="md-toolbar-tools">
-        <div class="md-title">Material Design Data Table</div>
-      </div>
+    <div class="md-toolbar-tools">
+      <div class="md-title">Material Design Data Table</div>
+    </div>
     </md-toolbar>
     
     <md-content laout="column" flex>
-      <md-card ng-controller="AnimeListCtrl">
-        <md-data-table-toolbar ng-show="!selected.length">
-          <h2 class="md-title">Nutrition</h2>
-        </md-data-table-toolbar>
+    <md-card ng-controller="AnimeListCtrl">
+    <md-data-table-toolbar ng-show="!selected.length">
+    <a class="md-title" href="#" onclick="verifyUser()">Lets go</a>
+    <br/>
+     <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+    </md-data-table-toolbar>
 
-        <md-data-table-toolbar class="alternate" ng-show="selected.length">
-          <div>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</div>
-        </md-data-table-toolbar>
-
-        <md-data-table-container>
-          <table md-data-table class="md-primary" md-row-select="selected" md-progress="deferred">
-            <thead md-order="query.order" md-trigger="onorderchange">
-              <tr>
-                <th order-by="title" name="Title" ></th>
-                <th numeric order-by="progress" name="Progress"></th>
-                <th order-by="type.value" name="Type"></th>
-                <th numeric order-by="score.value" name="Score"></th>
-                <th order-by="season.value" name="Season"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr md-auto-select ng-repeat="dessert in watchingList.data | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
-                <td>{{dessert.title}}</td>
-                <td>{{dessert.progressString}}</td>
-                <td>{{dessert.type}}</td>
-                <td>{{dessert.score.value}}</td>
-                <td>{{dessert.season}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </md-data-table-container>
-
-        <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-trigger="onpagechange"></md-data-table-pagination>
-      </md-card>
+    <md-data-table-toolbar class="alternate" ng-show="selected.length">
+    <div>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</div>
+    </md-data-table-toolbar>
+    <md-data-table-container>
+    <table md-data-table class="md-primary" md-row-select="selected" md-progress="deferred">
+      <thead md-order="query.order" md-trigger="onorderchange">
+        <tr>
+          <th order-by="title" name="Title" ></th>
+          <th numeric order-by="progress" name="Progress"></th>
+          <th order-by="type.value" name="Type"></th>
+          <th numeric order-by="score.value" name="Score"></th>
+          <th order-by="season.value" name="Season"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr md-auto-select ng-repeat="dessert in watchingList.data | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
+          <td>{{dessert.title}}</td>
+          <td>{{dessert.progressString}}</td>
+          <td>{{dessert.type}}</td>
+          <td>{{dessert.score.value}}</td>
+          <td>{{dessert.season}}</td>
+        </tr>
+      </tbody>
+    </table>
+    </md-data-table-container>
+    <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-trigger="onpagechange"></md-data-table-pagination>
+    </md-card>
     </md-content>
-    
+    <script>
+    function verifyUser()
+    {
+      window.ChiikaGetAnimelistRequest(function(t)
+      {
+           console.log(t);
+      },function(error)
+      {
+            console.log("Error " + error);
+      });
+      }
+    </script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-animate.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-aria.min.js"></script>

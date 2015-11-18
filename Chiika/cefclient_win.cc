@@ -114,7 +114,7 @@ namespace client {
 				false,             // Show controls.
 				false,
 				CefRect(),        // Use default system size.
-				context->GetAppWorkingDirectory() + "../../Resources/UI/Index.html");   // Use default URL.
+				context->GetAppWorkingDirectory() + "../../Resources/UI/dataTableTest2.html");   // Use default URL.
 
 			
 

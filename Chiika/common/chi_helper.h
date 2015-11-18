@@ -17,6 +17,7 @@
 #define __Chi_helper_h__
 //----------------------------------------------------------------------------
 #include "include\cef_v8.h"
+#include "Common\Required.h"
 //----------------------------------------------------------------------------
 namespace Chiika
 {
@@ -27,6 +28,8 @@ namespace Chiika
 	CefRefPtr<CefV8Value> ListValueToV8Value(CefRefPtr<CefListValue> value, int index);
 	std::string DumpListValue(CefRefPtr<CefListValue> list, int index);
 	std::string DumpList(CefRefPtr<CefListValue> list);
+
+	void AnimeListToCefList(const ChiikaApi::UserAnimeList& source,CefRefPtr<CefListValue> target);
 }
 
 //----------------------------------------------------------------------------

@@ -23,7 +23,7 @@ namespace client
 {
 	namespace Chiika_Browser
 	{
-		class ChiBrowserDelegate : public ClientHandler::ProcessMessageDelegate,public ChiikaApi::RequestListener
+		class ChiBrowserDelegate : public ClientHandler::ProcessMessageDelegate
 		{
 		public:
 			ChiBrowserDelegate();
@@ -34,11 +34,29 @@ namespace client
 				CefProcessId source_process,
 				CefRefPtr<CefProcessMessage> message) OVERRIDE;
 
+
+			CefRefPtr<CefProcessMessage> Message;
+		private:
+			IMPLEMENT_REFCOUNTING(ChiBrowserDelegate);
+		};
+		class CefRunnableCurlRequestWin : public CefBase,public ChiikaApi::RequestListener
+		{
+		public:
+			CefRunnableCurlRequestWin(CefRefPtr<CefBrowser>,CefRefPtr<CefProcessMessage>);
+
+#ifdef OS_WIN
+			static DWORD WINAPI RunOnSeperateThread(LPVOID params);
+#endif
+
+
 			//Listen for ChiikaApi events here
 			virtual void OnSuccess(ChiikaApi::RequestInterface*);
 			virtual void OnError(ChiikaApi::RequestInterface*);
+
+			CefRefPtr<CefBrowser> m_pBrowser;
+			CefRefPtr<CefProcessMessage> m_pMessage;
 		private:
-			IMPLEMENT_REFCOUNTING(ChiBrowserDelegate);
+			IMPLEMENT_REFCOUNTING(CefRunnableCurlRequestWin);
 		};
 
 		void CreateProcessMessageDelegates(ClientHandler::ProcessMessageDelegateSet& delegates);

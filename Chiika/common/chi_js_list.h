@@ -21,6 +21,8 @@ const char kErrorCallback[] = "Error";
 const char kSuccessCallback[] = "Success";
 const char kTestFunc[] = "Testo";
 const char kVerifyUser[] = "VerifyUser";
+const char kGetUserInfo[] = "GetUserInfo";
+const char kGetAnimelistRequest[] = "GetAnimelistRequest";
 
 //Usage
 //All functions will be called as
@@ -28,12 +30,14 @@ const char kVerifyUser[] = "VerifyUser";
 static enum JsEnum
 {
 	TestFunc,
-	VerifyUser
+	VerifyUser,
+	GetAnimelistRequest
 };
 static std::map<std::string,JsEnum> jsCpp = 
 {
 	std::make_pair("Testo",JsEnum::TestFunc),
-	std::make_pair(kVerifyUser,JsEnum::VerifyUser)
+	std::make_pair(kVerifyUser,JsEnum::VerifyUser),
+	std::make_pair(kGetAnimelistRequest,GetAnimelistRequest)
 };
 
 #define InNamespace(x) std::string(kNamespace) + std::string(x)
