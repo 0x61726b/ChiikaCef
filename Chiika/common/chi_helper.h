@@ -29,7 +29,15 @@ namespace Chiika
 	std::string DumpListValue(CefRefPtr<CefListValue> list, int index);
 	std::string DumpList(CefRefPtr<CefListValue> list);
 
-	void AnimeListToCefList(const ChiikaApi::UserAnimeList& source,CefRefPtr<CefListValue> target);
+	void SetDictionary(CefRefPtr<CefDictionaryValue> source, CefRefPtr<CefV8Value> target);
+	void SetDictionaryValue(
+		CefRefPtr<CefV8Value> list,
+		const CefString& key,
+		CefRefPtr<CefDictionaryValue> value);
+	void AnimeListToCefList(ChiikaApi::UserAnimeList* source,
+							CefRefPtr<CefDictionaryValue> target,
+							ChiikaApi::UserAnimeEntry::KeyList,
+							ChiikaApi::Anime::KeyList);
 }
 
 //----------------------------------------------------------------------------

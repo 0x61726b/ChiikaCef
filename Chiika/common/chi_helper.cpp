@@ -26,37 +26,37 @@ namespace Chiika
 		CefRefPtr<CefV8Value> value)
 	{
 
-		if(value->IsArray()) {
+		if (value->IsArray()) {
 			CefRefPtr<CefListValue> new_list = CefListValue::Create();
-			SetList(value,new_list);
-			list->SetList(index,new_list);
+			SetList(value, new_list);
+			list->SetList(index, new_list);
 		}
-		else if(value->IsString()) {
-			list->SetString(index,value->GetStringValue());
+		else if (value->IsString()) {
+			list->SetString(index, value->GetStringValue());
 		}
-		else if(value->IsBool()) {
-			list->SetBool(index,value->GetBoolValue());
+		else if (value->IsBool()) {
+			list->SetBool(index, value->GetBoolValue());
 		}
-		else if(value->IsInt()) {
-			list->SetInt(index,value->GetIntValue());
+		else if (value->IsInt()) {
+			list->SetInt(index, value->GetIntValue());
 		}
-		else if(value->IsDouble()) {
-			list->SetDouble(index,value->GetDoubleValue());
+		else if (value->IsDouble()) {
+			list->SetDouble(index, value->GetDoubleValue());
 		}
-		else if(value->IsNull()) {
+		else if (value->IsNull()) {
 			list->SetNull(index);
 		}
-		else if(value->IsObject() && !value->IsFunction())
+		else if (value->IsObject() && !value->IsFunction())
 		{
 			CefRefPtr<CefDictionaryValue> dictionary = CefDictionaryValue::Create();
 			std::vector<CefString> keys;
 			value->GetKeys(keys);
 
-			for(size_t i=0; i < keys.size(); ++i)
+			for (size_t i = 0; i < keys.size(); ++i)
 			{
-				dictionary->SetString(keys[i],value->GetValue(keys[i])->GetStringValue());
+				dictionary->SetString(keys[i], value->GetValue(keys[i])->GetStringValue());
 			}
-			list->SetDictionary(index,dictionary);
+			list->SetDictionary(index, dictionary);
 		}
 		else
 		{
@@ -65,32 +65,32 @@ namespace Chiika
 	}
 
 	// Transfer a V8 array to a List.
-	void SetList(CefRefPtr<CefV8Value> source,CefRefPtr<CefListValue> target)
+	void SetList(CefRefPtr<CefV8Value> source, CefRefPtr<CefListValue> target)
 	{
 		CHECK(source->IsArray());
 
 		int arg_length = source->GetArrayLength();
-		if(arg_length == 0)
+		if (arg_length == 0)
 			return;
 
 		// Start with null types in all spaces.
 		target->SetSize(arg_length);
 
-		for(int i = 0; i < arg_length; ++i)
-			SetListValue(target,i,source->GetValue(i));
+		for (int i = 0; i < arg_length; ++i)
+			SetListValue(target, i, source->GetValue(i));
 	}
 
-	CefRefPtr<CefV8Value> ListValueToV8Value(CefRefPtr<CefListValue> value,int index)
+	CefRefPtr<CefV8Value> ListValueToV8Value(CefRefPtr<CefListValue> value, int index)
 	{
 		CefRefPtr<CefV8Value> new_value;
 
 		CefValueType type = value->GetType(index);
 
-		switch(type) {
+		switch (type) {
 		case VTYPE_LIST: {
 			CefRefPtr<CefListValue> list = value->GetList(index);
 			new_value = CefV8Value::CreateArray(list->GetSize());
-			SetList(list,new_value);
+			SetList(list, new_value);
 		} break;
 		case VTYPE_BOOL:
 			new_value = CefV8Value::CreateBool(value->GetBool(index));
@@ -122,11 +122,17 @@ namespace Chiika
 		CefRefPtr<CefV8Value> new_value;
 
 		CefValueType type = value->GetType(index);
-		switch(type) {
+		switch (type) {
 		case VTYPE_LIST: {
 			CefRefPtr<CefListValue> list = value->GetList(index);
 			new_value = CefV8Value::CreateArray(list->GetSize());
-			SetList(list,new_value);
+			SetList(list, new_value);
+		} break;
+		case VTYPE_DICTIONARY:
+		{
+			CefRefPtr<CefDictionaryValue> dict = value->GetDictionary(index);
+			new_value = CefV8Value::CreateArray(dict->GetSize());
+			SetDictionary(dict, new_value);
 		} break;
 		case VTYPE_BOOL:
 			new_value = CefV8Value::CreateBool(value->GetBool(index));
@@ -147,30 +153,94 @@ namespace Chiika
 			break;
 		}
 
-		if(new_value.get()) {
-			list->SetValue(index,new_value);
+		if (new_value.get()) {
+			list->SetValue(index, new_value);
 		}
 		else {
-			list->SetValue(index,CefV8Value::CreateNull());
+			list->SetValue(index, CefV8Value::CreateNull());
+		}
+	}
+
+	//Transfer a dict to a v8 array
+	void SetDictionaryValue(
+		CefRefPtr<CefV8Value> list,
+		const CefString& key,
+		CefRefPtr<CefDictionaryValue> value)
+	{
+
+		CefRefPtr<CefV8Value> new_value;
+
+		CefValueType type = value->GetType(key);
+		switch (type) {
+		case VTYPE_LIST: {
+			CefRefPtr<CefListValue> list = value->GetList(key);
+			new_value = CefV8Value::CreateArray(list->GetSize());
+			SetList(list, new_value);
+		} break;
+		case VTYPE_DICTIONARY:
+		{
+			CefRefPtr<CefDictionaryValue> dict = value->GetDictionary(key);
+			new_value = CefV8Value::CreateArray(dict->GetSize());
+
+		} break;
+		case VTYPE_BOOL:
+			new_value = CefV8Value::CreateBool(value->GetBool(key));
+			break;
+		case VTYPE_DOUBLE:
+			new_value = CefV8Value::CreateDouble(value->GetDouble(key));
+			break;
+		case VTYPE_INT:
+			new_value = CefV8Value::CreateInt(value->GetInt(key));
+			break;
+		case VTYPE_STRING:
+			new_value = CefV8Value::CreateString(value->GetString(key));
+			break;
+		case VTYPE_NULL:
+			new_value = CefV8Value::CreateNull();
+			break;
+		default:
+			break;
+		}
+
+		if (new_value.get()) {
+			list->SetValue(key, new_value, CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_READONLY);
+		}
+		else {
+			list->SetValue(key, CefV8Value::CreateNull(), CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_READONLY);
 		}
 	}
 
 	// Transfer a List to a V8 array.
-	void SetList(CefRefPtr<CefListValue> source,CefRefPtr<CefV8Value> target)
+	void SetList(CefRefPtr<CefListValue> source, CefRefPtr<CefV8Value> target)
 	{
 		DCHECK(target->IsArray());
 
 		int arg_length = source->GetSize();
-		if(arg_length == 0)
+		if (arg_length == 0)
 			return;
 
-		for(int i = 0; i < arg_length; ++i)
-			SetListValue(target,i,source);
+		for (int i = 0; i < arg_length; ++i)
+			SetListValue(target, i, source);
 	}
-	std::string DumpListValue(CefRefPtr<CefListValue> list,int index)
+	void SetDictionary(CefRefPtr<CefDictionaryValue> source, CefRefPtr<CefV8Value> target)
+	{
+		DCHECK(target->IsArray());
+
+		std::vector<CefString> keys;
+		source->GetKeys(keys);
+		int arg_length = keys.size();
+		if (arg_length == 0)
+			return;
+
+
+		for (int i = 0; i < arg_length; ++i)
+			SetDictionaryValue(target, keys[i],source);
+
+	}
+	std::string DumpListValue(CefRefPtr<CefListValue> list, int index)
 	{
 		std::string result;
-		switch(list->GetType(index)) {
+		switch (list->GetType(index)) {
 		case VTYPE_LIST:
 			result += DumpList(list->GetList(index));
 			break;
@@ -198,74 +268,41 @@ namespace Chiika
 		return result;
 	}
 
-	void AnimeListToCefList(const ChiikaApi::UserAnimeList& source,CefRefPtr<CefListValue> target)
+	void AnimeListToCefList(ChiikaApi::UserAnimeList* source,
+		CefRefPtr<CefDictionaryValue> target,
+		ChiikaApi::UserAnimeEntry::KeyList userAnimeKeys,
+		ChiikaApi::Anime::KeyList animeKeys)
 	{
-		ChiikaApi::UserAnimeList list = source;
-		ChiikaApi::UserAnimeList::iterator It = list.begin();
-
+		
+		ChiikaApi::UserAnimeList::iterator It = source->begin();
 		int index = 0;
-		for(It; It != list.end(); It++)
+		for (It; It != source->end();It++)
 		{
-			CefRefPtr<CefListValue> cefAnime = CefListValue::Create();
-
-			cefAnime->SetInt(0,It->first);							//Id
-			cefAnime->SetString(1,It->second.Anime.Title);			//Title
-			cefAnime->SetString(2,It->second.Anime.English);		//English
-			cefAnime->SetInt(3,It->second.Anime.EpisodeCount);		//Episode Count
-			cefAnime->SetInt(4,It->second.Anime.Type);				//Type
-			cefAnime->SetInt(5,It->second.Anime.Status);			//Status
-			cefAnime->SetString(6,It->second.Anime.StartDate);		//Start Date
-			cefAnime->SetString(7,It->second.Anime.Image);		//Start Date
+			//This UserAnimeEntry index
+			CefRefPtr<CefDictionaryValue> userAnimeDict = CefDictionaryValue::Create();
 
 
-			//Extra Details
-			CefRefPtr<CefListValue> extraDetails = CefListValue::Create();
-			extraDetails->SetString(0,It->second.Anime.ExtraDetails.Synopsis);
+			//UserAnimeEntry::Anime
+			CefRefPtr<CefDictionaryValue> animeDict = CefDictionaryValue::Create();
 
-			//Tags
-			CefRefPtr<CefListValue> tags = CefListValue::Create();
-			for(size_t i=0; i < It->second.Anime.ExtraDetails.Tags.size(); ++i)
+			for (size_t j = 0; j < animeKeys.size(); j++)
 			{
-				tags->SetString(i,It->second.Anime.ExtraDetails.Tags.at(i));
+				const std::string& value = It->second.Anime.GetKeyValue(animeKeys.at(j));
+				animeDict->SetString(animeKeys.at(j), value);
 			}
-			extraDetails->SetList(1,tags);
+			userAnimeDict->SetDictionary("anime", animeDict);
 
-			//Producers
-			CefRefPtr<CefListValue> producers = CefListValue::Create();
-			for(size_t i=0; i < It->second.Anime.ExtraDetails.Producers.size(); ++i)
-			{
-				producers->SetString(i,It->second.Anime.ExtraDetails.Producers.at(i));
-			}
-			extraDetails->SetList(2,producers);
-			extraDetails->SetString(3,It->second.Anime.ExtraDetails.Premiered);
-			extraDetails->SetString(4,It->second.Anime.ExtraDetails.DurationPerEpisode);
 
-			// OVER HERE
-			cefAnime->SetList(8,extraDetails);
+			////UserAnimeEntry properties
+			//for (size_t k = 0; k < userAnimeKeys.size(); k++)
+			//{
+			//	userAnimeDict->SetString(userAnimeKeys[k],
+			//		source.at(k).GetKeyValue(userAnimeKeys[k]));
+			//}
 
-			//Stats
-			CefRefPtr<CefListValue> statistics = CefListValue::Create();
-			statistics->SetInt(0,It->second.Anime.Statistics.Popularity);
-			statistics->SetInt(1,It->second.Anime.Statistics.Ranked);
-			statistics->SetInt(2,It->second.Anime.Statistics.Score);
 
-			cefAnime->SetList(9,statistics);
 
-			cefAnime->SetInt(10,It->second.MyId);
-			cefAnime->SetInt(11,It->second.WatchedEpisodes);
-
-			cefAnime->SetString(12,It->second.StartDate);
-			cefAnime->SetString(13,It->second.EndDate);
-
-			cefAnime->SetInt(14,It->second.Score);
-			cefAnime->SetInt(15,It->second.Status);
-
-			cefAnime->SetInt(16,It->second.Rewatching);
-			cefAnime->SetInt(17,It->second.RewatchingEp);
-
-			cefAnime->SetString(18,It->second.LastUpdated);
-
-			target->SetList(index,cefAnime);
+			target->SetDictionary("Anime", userAnimeDict);
 			index++;
 		}
 	}
@@ -273,14 +310,14 @@ namespace Chiika
 	std::string DumpList(CefRefPtr<CefListValue> list)
 	{
 		int arg_length = list->GetSize();
-		if(arg_length == 0)
+		if (arg_length == 0)
 			return "";
 
 		std::stringstream result;
 		result << "(";
-		for(int i = 0; i < arg_length; ++i) {
-			result << DumpListValue(list,i);
-			if(i + 1 < arg_length)
+		for (int i = 0; i < arg_length; ++i) {
+			result << DumpListValue(list, i);
+			if (i + 1 < arg_length)
 				result << ", ";
 		}
 		result << ")";

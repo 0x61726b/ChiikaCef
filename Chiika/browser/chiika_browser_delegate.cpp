@@ -95,13 +95,17 @@ namespace client
 
 				ChiikaApi::UserAnimeList animeList = malManager->GetAnimeList();
 
-				CefRefPtr<CefListValue> cefAnimeList = CefListValue::Create();
+				CefRefPtr<CefDictionaryValue> cefAnimeList = CefDictionaryValue::Create();
 
-				::Chiika::AnimeListToCefList(animeList,cefAnimeList);
+				
+
+				::Chiika::AnimeListToCefList(&animeList,cefAnimeList
+				, ChiikaApi::UserAnimeEntry::GetKeys(),
+				ChiikaApi::Anime::GetKeys());
 
 				message_args->SetBool(0,true);
 
-				message_args->SetList(1,cefAnimeList);
+				message_args->SetDictionary(1,cefAnimeList);
 				m_pBrowser->SendProcessMessage(PID_RENDERER,browserMessage);
 			}
 
