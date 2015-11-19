@@ -21,6 +21,7 @@
 #include "Root\Root.h"
 #include "Request\RequestInterface.h"
 #include "Request\RequestList.h"
+#include "Database\JsKeys.h"
 
 //Requests
 #include "Request\AccountVerify.h"
@@ -94,18 +95,65 @@ namespace client
 				ChiikaApi::MalManager* malManager = ChiikaApi::MalManager::Get();
 
 				ChiikaApi::UserAnimeList animeList = malManager->GetAnimeList();
-
-				CefRefPtr<CefDictionaryValue> cefAnimeList = CefDictionaryValue::Create();
-
 				
+				CefRefPtr<CefListValue> cefAnimeList = CefListValue::Create();
 
-				::Chiika::AnimeListToCefList(&animeList,cefAnimeList
-				, ChiikaApi::UserAnimeEntry::GetKeys(),
-				ChiikaApi::Anime::GetKeys());
+				std::vector<std::string> animeKeys;
+				::GetAnimeKeys(animeKeys);
+				
+				KeyList userAnimeKeys;
+				::GetUserAnimeEntryKeys(userAnimeKeys);
+
+				ChiikaApi::UserAnimeList::iterator It = animeList.begin();
+				int index = 0;
+				
+				for(It; It != animeList.end();It++)
+				{
+					//This UserAnimeEntry index
+					CefRefPtr<CefDictionaryValue> userAnimeDict = CefDictionaryValue::Create();
+
+
+					//UserAnimeEntry::Anime
+					CefRefPtr<CefDictionaryValue> animeDict = CefDictionaryValue::Create();
+
+					for(size_t j = 0; j < animeKeys.size(); j++)
+					{
+						const std::string& value = It->second.Anime.GetKeyValue(animeKeys.at(j));
+						animeDict->SetString(animeKeys.at(j),value);
+					}
+					userAnimeDict->SetDictionary("anime",animeDict);
+
+
+
+					//UserAnimeEntry properties
+					for (size_t k = 0; k < userAnimeKeys.size(); k++)
+					{
+						userAnimeDict->SetString(userAnimeKeys[k],
+							It->second.GetKeyValue(userAnimeKeys[k]));
+					}
+
+
+
+					cefAnimeList->SetDictionary(index,userAnimeDict);
+					index++;
+				}
+
+				//Include User Info
+				KeyList userKeys;
+				::GetUserInfoKeys(userKeys);
+
+				ChiikaApi::UserInfo ui = ChiikaApi::LocalDataManager::Get()->GetUserInfo();
+
+				CefRefPtr<CefDictionaryValue> userInfoDict = CefDictionaryValue::Create();
+				for(size_t i = 0; i < userKeys.size(); i++)
+				{
+					userInfoDict->SetString(userKeys[i],
+											ui.GetKeyValue(userKeys[i]));
+				}
 
 				message_args->SetBool(0,true);
-
-				message_args->SetDictionary(1,cefAnimeList);
+				message_args->SetList(1,cefAnimeList);
+				message_args->SetDictionary(2,userInfoDict);
 				m_pBrowser->SendProcessMessage(PID_RENDERER,browserMessage);
 			}
 

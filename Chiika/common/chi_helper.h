@@ -34,10 +34,7 @@ namespace Chiika
 		CefRefPtr<CefV8Value> list,
 		const CefString& key,
 		CefRefPtr<CefDictionaryValue> value);
-	void AnimeListToCefList(ChiikaApi::UserAnimeList* source,
-							CefRefPtr<CefDictionaryValue> target,
-							ChiikaApi::UserAnimeEntry::KeyList,
-							ChiikaApi::Anime::KeyList);
+
 }
 
 //----------------------------------------------------------------------------
