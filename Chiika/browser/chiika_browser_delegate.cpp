@@ -245,7 +245,7 @@ namespace client
 				}
 				/// GetAnimelistRequest
 				//	ChiikaGetAnimelistRequest(success,error)
-				//	return: { animeList }
+				//	return: { animeListDict,userInfoDict }
 				//  Creates MAL request to get user's animelist
 				///
 				if(message_name == InNamespace(kGetAnimelistRequest))
