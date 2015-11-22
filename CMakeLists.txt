@@ -409,7 +409,7 @@ if(OS_WINDOWS)
   # /Ob2                  = Inline any suitable function
   # /GF                   = Enable string pooling
   # /D NDEBUG /D _NDEBUG  = Not a debug build
-  set(CEF_COMPILER_FLAGS_RELEASE  "/MT /O2 /Ob2 /GF /D NDEBUG /D _NDEBUG")
+  set(CEF_COMPILER_FLAGS_RELEASE  "/MT /O2 /Ob2 /GF /D DEBUG")
   # /DEBUG                = Generate debug information
   set(CEF_LINKER_FLAGS_DEBUG      "/DEBUG")
   # /MANIFEST:NO          = No default manifest (see ADD_WINDOWS_MANIFEST macro usage)

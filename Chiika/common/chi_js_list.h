@@ -23,6 +23,7 @@ const char kTestFunc[] = "Testo";
 const char kVerifyUser[] = "VerifyUser";
 const char kGetUserInfo[] = "GetUserInfo";
 const char kGetAnimelistRequest[] = "GetAnimelistRequest";
+const char kGetAnimelist[] = "GetAnimelist";
 
 //Usage
 //All functions will be called as
@@ -31,13 +32,15 @@ static enum JsEnum
 {
 	TestFunc,
 	VerifyUser,
-	GetAnimelistRequest
+	GetAnimelistRequest,
+	GetAnimelist
 };
 static std::map<std::string,JsEnum> jsCpp = 
 {
 	std::make_pair("Testo",JsEnum::TestFunc),
 	std::make_pair(kVerifyUser,JsEnum::VerifyUser),
-	std::make_pair(kGetAnimelistRequest,GetAnimelistRequest)
+	std::make_pair(kGetAnimelistRequest,GetAnimelistRequest),
+	std::make_pair(kGetAnimelist,GetAnimelist)
 };
 
 #define InNamespace(x) std::string(kNamespace) + std::string(x)

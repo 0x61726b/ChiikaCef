@@ -1,40 +1,27 @@
-<div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--1-col"></div>
-    <div class="mdl-cell mdl-cell--10-col mdl-card mdl-shadow--2dp">
-        <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
-            <div class="mdl-tabs__tab-bar" style="background-color:#B0BEC5;">
-                <a href="#watching-panel" class="mdl-tabs__tab is-active ">
-                    <span class="mdl-badge" data-badge="{{ctrl.watchingList.length}}">Watching</span>
-                </a>
-                <a href="#completed-panel" class="mdl-tabs__tab">
-                    <span class="mdl-badge" data-badge="{{ctrl.completedList.length}}">Completed</span>
-                </a>
-                <a href="#dropped-panel" class="mdl-tabs__tab">
-                    <span class="mdl-badge" data-badge="{{ctrl.droppedList.length}}">Dropped</span>
-                </a>
-                <a href="#onhold-panel" class="mdl-tabs__tab">
-                    <span class="mdl-badge" data-badge="{{ctrl.onholdList.length}}">On Hold</span>
-                </a>
-                <a href="#plantowatch-panel" class="mdl-tabs__tab">
-                    <span class="mdl-badge" data-badge="{{ctrl.plantowatchList.length}}">Plan to Watch</span>
-                </a>
-            </div>
-            <div class="mdl-tabs__panel is-active" id="watching-panel">
-            <anime-table-dir anime-list="ctrl.watchingList"></anime-table-dir>
+<div layout="column" flex>
+    <div class="colorThingFlex"></div>
+    <div layout="row" flex style="margin-top: -48px">
+        <div flex="10"></div>
+        <div flex="80" class="tabcontentBackground" ng-controller="AnimeListCtrl">
+            <md-tabs md-dynamic-height md-center-tabs md-border-bottom class="tabcontentBackground md-whiteframe-z3">
+                <md-tab label="Watching">
+                    <anime-table-dir anime-list="watchingList"></anime-table-dir>
+                </md-tab>
+                <md-tab label="Completed ">
+                    <anime-table-dir anime-list="completedList"></anime-table-dir>
+                </md-tab>
+                <md-tab label="Dropped ">
+                    <anime-table-dir anime-list="droppedList"></anime-table-dir>
+                </md-tab>
+                <md-tab label="On Hold ">
+                    <anime-table-dir anime-list="onHoldList"></anime-table-dir>
+                </md-tab>
+                <md-tab label="Plan to Watch ">
+                    <anime-table-dir anime-list="ptwList"></anime-table-dir>
+                </md-tab>
+            </md-tabs>
         </div>
-        <div class="mdl-tabs__panel" id="completed-panel">
-        <anime-table-dir anime-list="ctrl.completedList"></anime-table-dir>
+        <div flex="10"></div>
     </div>
-    <div class="mdl-tabs__panel" id="dropped-panel">
-        <anime-table-dir anime-list="ctrl.droppedList"></anime-table-dir>
-    </div>
-    <div class="mdl-tabs__panel" id="onhold-panel">
-        <anime-table-dir anime-list="ctrl.onholdList"></anime-table-dir>
-    </div>    
-    <div class="mdl-tabs__panel" id="plantowatch-panel">
-        <anime-table-dir anime-list="ctrl.plantowatchList"></anime-table-dir>
-    </div>     
-</div>
-</div>
-<div class="mdl-cell mdl-cell--1-col"></div>
+
 </div>

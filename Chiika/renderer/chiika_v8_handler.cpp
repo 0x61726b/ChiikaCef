@@ -58,7 +58,7 @@ namespace
 						CefRefPtr<CefV8Value> v8list = CefV8Value::CreateArray(list->GetSize());
 
 
-						
+
 						for(size_t i = 1; i < message_args->GetSize();i++)
 							list->SetValue(i-1,message_args->GetValue(i));
 
@@ -82,6 +82,11 @@ namespace
 							}
 						}
 					}
+					else
+					{
+						//Can't enter the context.Shouldnt happen.
+					}
+					context->Exit();
 				}
 			}
 		}
@@ -134,6 +139,42 @@ namespace
 				browser->SendProcessMessage(PID_BROWSER,message);
 
 				return true;
+			}
+			else
+			{
+				CefRefPtr<CefV8Value> callback = arguments[1];
+				CefRefPtr<CefV8Context> context = CefV8Context::GetCurrentContext();
+
+
+
+
+
+				if(context.get() && context->Enter())
+				{
+					CefRefPtr<CefV8Value> object = CefV8Value::CreateObject(NULL);
+					CefV8ValueList args;
+					CefRefPtr<CefV8Value> errorMsg = CefV8Value::CreateString("InvalidFunctionCall: Function parameters aren't correct.");
+					CefRefPtr<CefV8Exception> exception;
+
+					args.push_back(errorMsg);
+
+					if(callback->ExecuteFunctionWithContext(context,object,args))
+					{
+						//MessageBox(0,L"ExecuteFunctionWithContext",L"success",0);
+						std::string log = "InvalidFunctionCall";
+						log.append(" ExecuteFunctionWithContext Succeeded");
+						LOG(INFO) << log;
+					}
+					else
+					{
+						if(callback->HasException())
+						{
+							std::string log = "InvalidFunctionCall";
+							log.append(" has exception.");
+							LOG(INFO) << log;
+						}
+					}
+				}
 			}
 			return false;
 		}

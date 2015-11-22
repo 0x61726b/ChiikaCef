@@ -95,18 +95,18 @@ namespace client
 				ChiikaApi::MalManager* malManager = ChiikaApi::MalManager::Get();
 
 				ChiikaApi::UserAnimeList animeList = malManager->GetAnimeList();
-				
+
 				CefRefPtr<CefListValue> cefAnimeList = CefListValue::Create();
 
 				std::vector<std::string> animeKeys;
 				::GetAnimeKeys(animeKeys);
-				
+
 				KeyList userAnimeKeys;
 				::GetUserAnimeEntryKeys(userAnimeKeys);
 
 				ChiikaApi::UserAnimeList::iterator It = animeList.begin();
 				int index = 0;
-				
+
 				for(It; It != animeList.end();It++)
 				{
 					//This UserAnimeEntry index
@@ -126,7 +126,7 @@ namespace client
 
 
 					//UserAnimeEntry properties
-					for (size_t k = 0; k < userAnimeKeys.size(); k++)
+					for(size_t k = 0; k < userAnimeKeys.size(); k++)
 					{
 						userAnimeDict->SetString(userAnimeKeys[k],
 							It->second.GetKeyValue(userAnimeKeys[k]));
@@ -148,7 +148,7 @@ namespace client
 				for(size_t i = 0; i < userKeys.size(); i++)
 				{
 					userInfoDict->SetString(userKeys[i],
-											ui.GetKeyValue(userKeys[i]));
+						ui.GetKeyValue(userKeys[i]));
 				}
 
 				message_args->SetBool(0,true);
@@ -156,7 +156,6 @@ namespace client
 				message_args->SetDictionary(2,userInfoDict);
 				m_pBrowser->SendProcessMessage(PID_RENDERER,browserMessage);
 			}
-
 		}
 		//----------------------------------------------------------------------------
 		void CefRunnableCurlRequestWin::OnError(ChiikaApi::RequestInterface* request)
@@ -255,7 +254,74 @@ namespace client
 					request.SetOptions();
 					request.AddListener(instance);
 					request.Initiate();
+				}
+				if(message_name == InNamespace(kGetAnimelist))
+				{
+					CefRefPtr<CefProcessMessage> browserMessage = CefProcessMessage::Create(CefString(std::string(message_name)));
+					CefRefPtr<CefListValue> message_args = browserMessage->GetArgumentList();
+					ChiikaApi::MalManager* malManager = ChiikaApi::MalManager::Get();
 
+					ChiikaApi::UserAnimeList animeList = malManager->GetAnimeList();
+
+					CefRefPtr<CefListValue> cefAnimeList = CefListValue::Create();
+
+					std::vector<std::string> animeKeys;
+					::GetAnimeKeys(animeKeys);
+
+					KeyList userAnimeKeys;
+					::GetUserAnimeEntryKeys(userAnimeKeys);
+
+					ChiikaApi::UserAnimeList::iterator It = animeList.begin();
+					int index = 0;
+
+					for(It; It != animeList.end();It++)
+					{
+						//This UserAnimeEntry index
+						CefRefPtr<CefDictionaryValue> userAnimeDict = CefDictionaryValue::Create();
+
+
+						//UserAnimeEntry::Anime
+						CefRefPtr<CefDictionaryValue> animeDict = CefDictionaryValue::Create();
+
+						for(size_t j = 0; j < animeKeys.size(); j++)
+						{
+							const std::string& value = It->second.Anime.GetKeyValue(animeKeys.at(j));
+							animeDict->SetString(animeKeys.at(j),value);
+						}
+						userAnimeDict->SetDictionary("anime",animeDict);
+
+
+
+						//UserAnimeEntry properties
+						for(size_t k = 0; k < userAnimeKeys.size(); k++)
+						{
+							userAnimeDict->SetString(userAnimeKeys[k],
+								It->second.GetKeyValue(userAnimeKeys[k]));
+						}
+
+
+
+						cefAnimeList->SetDictionary(index,userAnimeDict);
+						index++;
+					}
+
+					//Include User Info
+					KeyList userKeys;
+					::GetUserInfoKeys(userKeys);
+
+					ChiikaApi::UserInfo ui = ChiikaApi::LocalDataManager::Get()->GetUserInfo();
+
+					CefRefPtr<CefDictionaryValue> userInfoDict = CefDictionaryValue::Create();
+					for(size_t i = 0; i < userKeys.size(); i++)
+					{
+						userInfoDict->SetString(userKeys[i],
+							ui.GetKeyValue(userKeys[i]));
+					}
+
+					message_args->SetBool(0,true);
+					message_args->SetList(1,cefAnimeList);
+					message_args->SetDictionary(2,userInfoDict);
+					instance->m_pBrowser->SendProcessMessage(PID_RENDERER,browserMessage);
 				}
 			}
 			return 0;

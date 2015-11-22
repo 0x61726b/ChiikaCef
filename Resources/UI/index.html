@@ -1,51 +1,153 @@
-<html>
-	
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-		<link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-		
-		<link rel="stylesheet" href="resources/material.min.css">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-		<link rel="stylesheet" href="resources/chiika.css">
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		<!-- <script src="./js/angular.min.js"></script> 
-		// <script src="./js/chiika-js-0.1.0-min.js"></script>
-		// <script src="./js/chiika-ng-0.1.0-min.js"></script> -->
-	</head>
-	
-	<body style="background-color:#f0f0f0" ng-app="chiikaAngular">
-						<script>
-						window.ChiikaVerifyUser(function(t)
-						{
-							console.log(t);	
-						},function(error)
-						{
-							console.log("Error " + error);
-						},{user:"arkenthera",pass:"123asd456"});
+<!DOCTYPE html>
+<html lang="en">
 
-						var ChiikaApp =
-						{
-							testo: function(onSuccess,onFailure)
-							{
-								onSuccess = onSuccess || (function(returnValue) 
-								{
-									console.log(returnValue);
-								});
-								onFailure = onFailure || (function(error_code,reason)
-								{
+    <head>
+        <title>Angular Material - Starter App</title>
 
-								});
-								ChiikaTesto(onSuccess,"test","test2");
-							}
-						};
-						$(document).ready((function(window,app)
-						{
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
 
-						}).bind(null,window,ChiikaApp))
-					</script>		
-	</body>
-	
+        <link rel='stylesheet' href='./assets/fontgoogleapiscss.css'>
+        <link rel="stylesheet" href="./bower_components/angular-material/angular-material.css" />
+        <link href="./assets/icon.css" rel="stylesheet">
+        <link rel="stylesheet" href="assets/app.css" />
+        <link rel="stylesheet" href="chiika.css" />
+        <link rel="stylesheet" href="./assets/md-data-table.css">
+
+
+        <style type="text/css">
+            /**
+             * Hide when Angular is not yet loaded and initialized
+             */
+
+            [ng\:cloak],
+            [ng-cloak],
+            [data-ng-cloak],
+            [x-ng-cloak],
+            .ng-cloak,
+            .x-ng-cloak {
+                display: none !important;
+            }
+            .layout-margin, .layout-margin > .flex, .layout-margin > .flex-gt-sm, .layout-margin > .flex-md, .layout-margin > .flex-lt-lg {
+                margin: 0px; }
+            md-tabs
+            {
+                background-color:#fbfbfb;
+            }
+            body
+            {
+                background-color:#fbfbfb;
+            }
+            .tabContentBackground
+            {
+                background-color:#fbfbfb;
+            }
+            [role="tabpanel"] {
+                transition: none;
+            }
+
+        </style>
+
+    </head>
+
+    <body ng-app="chiika">
+        <div layout="column" ng-cloak layout-fill>
+            <section layout="column" role="main" style="background-color:blue">
+                <md-toolbar role="toolbar">
+                    <div class="md-toolbar-tools">
+                        <span flex="25" style="background-color:red"></span>
+                        <md-autocomplete md-items="item in ctrl.querySearch(ctrl.searchText) " style="width: 50%; ">
+                            <md-item-template>
+                                <span md-highlight-text="ctrl.searchText " md-highlight-flags="^i ">{{item.display}}</span>
+                            </md-item-template>
+                            <md-not-found>
+                                No matches "{{ctrl.searchText}} " were found.
+                                <a ng-click="ctrl.newState(ctrl.searchText)">Create a new one!</a>
+                            </md-not-found>
+                        </md-autocomplete>
+                        <md-menu md-position-mode="target-right target">
+                            <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                                <md-icon md-menu-origin>menu</md-icon>
+                            </md-button>
+                            <md-menu-content width="4" ng-controller="HomePageCtrl" >
+                                <md-menu-item ng-repeat="item in menuActions">
+                                    <md-button ng-click="onMenuClick($index)">
+                                        <div layout="row">
+                                            <p flex>{{item.name}}</p>
+                                            <md-icon md-menu-origin>menu</md-icon>
+                                        </div>
+                                    </md-button>
+                                </md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </div>
+                </md-toolbar>
+            </section>
+            <div style="background-color:red" layout="column">
+                <md-tabs md-dynamic-height md-stretch-tabs="always" md-border-bottom md-selected="selectedIndex" class="tabContentBackground">
+                    <md-tab label="Home">
+                        <div>
+                            <home-page-dir></home-page-dir>
+                        </div>    
+                    </md-tab>
+                    <md-tab label="Anime List">
+                        <anime-list-dir></anime-list-dir>
+                    </md-tab>
+                    <md-tab label="Manga List">
+                        no
+                    </md-tab>
+                    <md-tab label="Calendar">
+                        idea
+                    </md-tab>
+                    <md-tab label="Torrents">
+                        what i am doing
+                    </md-tab>
+                    <md-tab label="Library">
+                        what i am doing
+                    </md-tab>
+                    <md-tab label="Some other menu">
+                        what i am doing
+                    </md-tab>      
+                </md-tabs>
+            </div>
+        </div>
+
+
+        <!--            
+                        <md-tabs md-stretch-tabs="always" flex md-border-bottom md-selected="selectedIndex" class="tabContentBackground">
+                            <md-tab label="Home">
+                                <home-page-dir></home-page-dir>
+                            </md-tab>
+                            <md-tab flex layout-fill label="Anime List">
+                                <anime-list-dir></anime-list-dir>
+                            </md-tab>
+                            <md-tab label="Manga List">
+                                no
+                            </md-tab>
+                            <md-tab label="Calendar">
+                                idea
+                            </md-tab>
+                            <md-tab label="Torrents">
+                                what i am doing
+                            </md-tab>
+                            <md-tab label="Library">
+                                what i am doing
+                            </md-tab>
+                            <md-tab label="Some other menu">
+                                what i am doing
+                            </md-tab>      
+                        </md-tabs>
+    </div>-->
+        <!--        </div>-->
+        <script src="./bower_components/angular/angular.js "></script>
+        <script src="./bower_components/angular-animate/angular-animate.js "></script>
+        <script src="./bower_components/angular-aria/angular-aria.js "></script>
+        <script type="text/javascript " src="./bower_components/angular-material/angular-material.js "></script>
+        <script src="./js/md-data-table.js"></script>
+        <script src="./js/chiika-js-0.1.0.js"></script>
+        <script src="./js/chiika-ng-0.1.0.js"></script>
+    </body>
+
 </html>

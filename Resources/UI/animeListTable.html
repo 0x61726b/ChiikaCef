@@ -1,20 +1,24 @@
-<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable" style="width:100%;margin-top: -1px;">
-    <thead>
-        <tr>
-            <th class="mdl-data-table__cell--non-numeric">Title</th>
-            <th>Progress</th>
-            <th>Type</th>
-            <th>Score</th>
-            <th>Season</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="anime in ctrl.animeList">
-            <td class="mdl-data-table__cell--non-numeric">{{anime.title}}</td>
-            <td>{{anime.progress}}</td>
-            <td>{{anime.type}}</td>
-            <td>{{anime.progress}}</td>
-            <td>{{anime.season}}</td>
-        </tr>
-    </tbody>
-</table>
+<md-card ng-controller="AnimeListCtrl as ctrl" layout="column" layout-fill>
+    <md-data-table-container>
+        <table md-data-table md-row-select="selected">
+            <thead md-order="query.order" md-trigger="onorderchange" md-progress="deferred">
+                <tr>
+                    <th order-by="title" name="Title" ></th>
+                    <th numeric order-by="progress" name="Progress"></th>
+                    <th order-by="type.value" name="Type"></th>
+                    <th numeric order-by="score.value" name="Score"></th>
+                    <th order-by="season.value" name="Season X"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr md-auto-select ng-repeat="dessert in animeList.data | orderBy: query.order">
+                    <td>{{dessert.title}}</td>
+                    <td>{{dessert.progressString}}</td>
+                    <td>{{dessert.type}}</td>
+                    <td>{{dessert.score.value}}</td>
+                    <td>{{dessert.season}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </md-data-table-container>
+</md-card>
