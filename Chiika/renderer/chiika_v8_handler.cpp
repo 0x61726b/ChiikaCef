@@ -113,17 +113,17 @@ namespace
 
 				std::string successCallback = name;
 				successCallback.append(kSuccessCallback);
-				//Success callback
-				callback_map_.insert(CallbackMap::value_type(successCallback,
-					std::make_pair(arguments[0],context)));
+				////Success callback
+				//callback_map_.insert(CallbackMap::value_type(successCallback,
+				//	std::make_pair(arguments[0],context)));
+				FillCallbackMap(successCallback,arguments[0]);
 
 				if(arguments[1]->IsFunction())
 				{
 					std::string errorCallback = name;
 					errorCallback.append(kErrorCallback);
 					//Error callback
-					callback_map_.insert(CallbackMap::value_type(errorCallback,
-						std::make_pair(arguments[1],context)));
+					FillCallbackMap(errorCallback,arguments[1]);
 				}
 
 				//Other arguments

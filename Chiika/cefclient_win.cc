@@ -108,6 +108,7 @@ namespace client {
 
 
 
+
 			ChiikaApi::Root r;
 			r.Initialize(dir);
 			// Create the first window.

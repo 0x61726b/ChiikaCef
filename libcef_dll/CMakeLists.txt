@@ -490,6 +490,6 @@ add_library(libcef_dll_wrapper STATIC
   ${LIBCEF_INCLUDE_WRAPPER_SRCS}
   ${LIBCEF_WRAPPER_SRCS}
   )
-
+set_target_properties(libcef_dll_wrapper PROPERTIES FOLDER "Libcef")
 # Remove the default "lib" prefix from the resulting library.
 set_target_properties(libcef_dll_wrapper PROPERTIES PREFIX "")

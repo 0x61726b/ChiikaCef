@@ -339,3 +339,8 @@ function handleAnimelistError(args)
 
 chiika = new Chiika();
 //window.ChiikaGetAnimelist(handleAnimelistCallback, handleAnimelistError, "");
+
+$(document).ready(function()
+{
+//    window.ChiikaGetAnimelist(handleAnimelistCallback, handleAnimelistError, "");
+});

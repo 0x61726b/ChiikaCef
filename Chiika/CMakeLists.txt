@@ -367,6 +367,8 @@ if(OS_MACOSX)
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/Info.plist
     )
 
+  set_target_properties(${CEF_TARGET} PROPERTIES FOLDER "Chiika")
+
   # Copy files into the main app bundle.
   add_custom_command(
     TARGET ${CEF_TARGET}
@@ -413,7 +415,7 @@ if(OS_WINDOWS)
   add_executable(${CEF_TARGET} WIN32 ${CEFCLIENT_SRCS})
   add_dependencies(${CEF_TARGET} libcef_dll_wrapper)
   target_link_libraries(${CEF_TARGET} libcef_lib libcef_dll_wrapper ChiikaApi ${CEF_STANDARD_LIBS} "glu32.lib" "opengl32.lib")
-
+  set_target_properties(${CEF_TARGET} PROPERTIES FOLDER "Chiika")
   if(USE_SANDBOX)
     # Logical target used to link the cef_sandbox library.
     ADD_LOGICAL_TARGET("cef_sandbox_lib" "${CEF_SANDBOX_LIB_DEBUG}" "${CEF_SANDBOX_LIB_RELEASE}")
