@@ -338,10 +338,4 @@ function handleAnimelistError(args)
 }
 
 chiika = new Chiika();
-//chiika.getAnimeList(handleAnimelistCallback, handleAnimelistError);
-window.ChiikaGetAnimelist(handleAnimelistCallback, handleAnimelistError, "");
-//window.setTimeout(function ()
-//{
-//
-//}, 2000);
-
+//window.ChiikaGetAnimelist(handleAnimelistCallback, handleAnimelistError, "");
