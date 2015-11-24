@@ -47,6 +47,14 @@
             [role="tabpanel"] {
                 transition: none;
             }
+            table[md-data-table]
+            {
+                transition: none;
+            }
+            .no-animate {
+                -webkit-transition: none !important;
+                transition: none !important;
+            }
 
         </style>
 
@@ -85,7 +93,7 @@
                     </div>
                 </md-toolbar>
             </section>
-            <div style="background-color:red" layout="column">
+            <div style="background-color:red" layout="column" ng-controller="HomePageCtrl">
                 <md-tabs md-dynamic-height md-stretch-tabs="always" md-border-bottom md-selected="selectedIndex" class="tabContentBackground">
                     <md-tab label="Home">
                         <div>
@@ -121,7 +129,7 @@
         <script src="js/jquery-2.1.4.min.js"></script>
         <script src="./js/chiika-ng-0.1.0.js"></script>
         <script src="./js/chiika-js-0.1.0.js"></script>
-        
+
     </body>
 
 </html>

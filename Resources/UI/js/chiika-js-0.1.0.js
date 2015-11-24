@@ -67,9 +67,10 @@ var ApiFuncCaller = function ()
             console.log("You can't call this function outside of Chiika.");
         }
     };
-    self.updateAngularElement = function(element,args)
+    self.updateAngularElement = function(element,args,index)
     {
-        angular.element(element).scope().updateAngularElement(args);
+        angular.element(element).scope().updateAngularElement(args,index);
+        angular.element(element).scope().$apply();
     };
 }, apiFunctions;
 
@@ -77,17 +78,17 @@ var ApiFuncCaller = function ()
 apiFunctions = new ApiFuncCaller();
 
 /**
-*
-*
-*
-*
-* @name Anime Model
-* @namespace
-*
-*
-* @version 0.1.0
-*/
-var AnimeModel = function()
+ *
+ *
+ *
+ *
+ * @name Anime Model
+ * @namespace
+ *
+ *
+ * @version 0.1.0
+ */
+var AnimeModel = function ()
 {
     var self = this,
             id = 0,
@@ -97,8 +98,9 @@ var AnimeModel = function()
             type = "",
             status = "",
             startDate = "",
-            endDate = "" ,
+            endDate = "",
             synopsis = "",
+            season = "",
             tags,
             premiered = "",
             producers = "",
@@ -106,101 +108,190 @@ var AnimeModel = function()
             score = 0,
             ranked = 0,
             popularity = 0;
-    self.getId = function()
+    self.getSeason = function()
     {
-        return id;
-    };
-    self.getTitle = function()
-    {
-        return title;
-    };
-    self.getEnglish = function()
-    {
-        return english;
-    };
-    self.getEpisodeCount = function()
-    {
-        return episodeCount;
-    };
-    self.getType = function()
-    {
-        return type;
+        var parts = this.startDate.split("-");
+        var year = parts[0];
+        var month = parts[1];
+
+        var iMonth = parseInt(month);
+
+        if(iMonth > 0 && iMonth <4)
+        {
+            return "Winter " +year;
+        }
+        if(iMonth > 3 && iMonth < 7)
+        {
+            return "Spring " + year;
+        }
+        if(iMonth > 6 && iMonth < 10)
+        {
+            return "Summer " + year;
+        }
+        if(iMonth > 9 && iMonth <= 12)
+        {
+            return "Fall " + year;
+        }
+        return "Unkown Season";
     };
     self.getStatus = function()
     {
-        return status;
+        if(this.status === "1")
+        {
+            return "Watching";
+        }
+        if(this.status === "2")
+        {
+            return "Completed";
+        }
+        if(this.status === "3")
+        {
+            return "On Hold";
+        }
+        if(this.status === "4")
+        {
+            return "Dropped";
+        }
+        if(this.status === "6")
+        {
+            return "Plan to Watch";
+        }
     };
-    self.getStartDate = function()
+    self.getType = function()
     {
-        return startDate;
+        if(this.type === "1")
+        {
+            return "Tv";
+        }
+        if(this.type === "2")
+        {
+            return "Ova";
+        }
+        if(this.type === "3")
+        {
+            return "Movie";
+        }
     };
-    self.getEndDate = function()
+};
+var UserAnimeModel = function ()
+{
+    var self = this, anime = null,
+            progress = {value: 0},
+            progressString = "",
+            score = {value: 0},
+            scoreString = "";
+
+    self.getProgressString = function ()
     {
-        return endDate;
+        if(this.anime.episodeCount === "0")
+        {
+            return "-";
+        }
+        else
+        {
+           return this.progress.value + "/" + this.anime.episodeCount;
+        }
     };
-    self.getSynopsis = function()
+    self.getScoreString = function ()
     {
-        return synopsis;
+        if (this.score === 0)
+        {
+            return "-";
+        }
+        else
+        {
+            return this.score;
+        }
     };
-    self.getTags = function()
+};
+var AngularViewModel = function()
+{
+    var self = this,
+            title = "",
+            progress = { value: 0 },
+            progressString = "",
+            type = "",
+            score = { value:0 },
+            scoreString = "",
+            season = "";
+    self.setModel = function(model)
     {
-        return tags;
-    };
-    self.getPremiered = function()
-    {
-        return premiered;
-    };
-    self.getProducers = function()
-    {
-        return producers;
-    };
-    self.getDuration = function()
-    {
-        return duration;
-    };
-    self.getScore = function()
-    {
-        return score;
-    };
-    self.getRanked = function()
-    {
-        return ranked;
-    };
-    self.getPopularity = function()
-    {
-        return popularity;
+        this.title = model.anime.title;
+        this.progress = model.progress;
+        this.progressString = model.getProgressString();
+        this.type = model.anime.getType();
+        this.score = model.score;
+        this.scoreString = model.getScoreString();
+        this.season = model.anime.getSeason();
     };
 };
 
 /**
-*
-*
-*
-*
-* @name Anime List
-* @namespace
-*
-*
-* @version 0.1.0
-*/
-var UserAnimeList = function()
+ *
+ *
+ *
+ *
+ * @name Anime List
+ * @namespace
+ *
+ *
+ * @version 0.1.0
+ */
+var UserAnimeList = function ()
 {
     var self = this,
             animeList;
 
-    self.getUserAnimeList = function()
+    self.getUserAnimeList = function ()
     {
         return animeList;
     };
-    self.setUserAnimeList = function(a)
+    self.setUserAnimeList = function (a)
     {
         animeList = a;
         console.log("Setting user anime list..size: " + animeList.length);
-        apiFunctions.updateAngularElement($("#watchingWrapper"),animeList);
-        angular.element($("#watchingWrapper")).scope().$apply();
+        console.log(animeList[0]);
+        var angularWatchingModelList = [];
+        var angularCompletedModelList = [];
+        var index = 0;
+        for (index; index < animeList.length; index++)
+        {
+            var listIdentifier = animeList[index].my_status;
+
+
+            var animeModel = new AnimeModel();
+            animeModel.title = animeList[index].anime.series_title;
+            animeModel.type = animeList[index].anime.series_type;
+            animeModel.status = animeList[index].series_status;
+            animeModel.startDate = animeList[index].anime.series_start;
+            animeModel.endDate = animeList[index].anime.series_end;
+            animeModel.episodeCount = animeList[index].anime.series_episodes;
+            var userAnimeModel = new UserAnimeModel();
+            userAnimeModel.anime = animeModel;
+            userAnimeModel.progress = {value: animeList[index].my_watched_episodes};
+            userAnimeModel.score = {value: animeList[index].my_score};
+
+            var angularModel = new AngularViewModel();
+            angularModel.setModel(userAnimeModel);
+
+            if( listIdentifier === "1")
+            {
+               angularWatchingModelList.push(angularModel);
+            }
+            if( listIdentifier === "2")
+            {
+               angularCompletedModelList.push(angularModel);
+            }
+        }
+        console.log(angularWatchingModelList);
+
+
+        apiFunctions.updateAngularElement($("#watchingWrapper"), angularWatchingModelList,1);
+
+        apiFunctions.updateAngularElement($("#completedWrapper"), angularCompletedModelList,2);
 
     };
-},_userAnimeList;
+}, _userAnimeList;
 _userAnimeList = new UserAnimeList();
 
 /**

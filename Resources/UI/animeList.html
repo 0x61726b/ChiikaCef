@@ -3,12 +3,12 @@
     <div layout="row" flex style="margin-top: -48px">
         <div flex="10"></div>
         <div flex="80" class="tabcontentBackground" ng-controller="AnimeListCtrl">
-            <md-tabs md-dynamic-height md-center-tabs md-border-bottom class="tabcontentBackground md-whiteframe-z3">
+            <md-tabs md-dynamic-height md-center-tabs md-border-bottom class="tabcontentBackground md-whiteframe-z3 no-animate">
                 <md-tab label="Watching">
                     <anime-table-dir id="watchingWrapper" anime-list="watchingList"></anime-table-dir>
                 </md-tab>
-                <md-tab label="Completed ">
-                    <anime-table-dir anime-list="completedList"></anime-table-dir>
+                <md-tab label="Completed">
+                    <anime-table-dir id="completedWrapper" anime-list="completedList"></anime-table-dir>
                 </md-tab>
                 <md-tab label="Dropped ">
                     <anime-table-dir anime-list="droppedList"></anime-table-dir>
