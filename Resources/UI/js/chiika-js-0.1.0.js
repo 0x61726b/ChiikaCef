@@ -67,6 +67,10 @@ var ApiFuncCaller = function ()
             console.log("You can't call this function outside of Chiika.");
         }
     };
+    self.updateAngularElement = function(element,args)
+    {
+        angular.element(element).scope().updateAngularElement(args);
+    };
 }, apiFunctions;
 
 
@@ -182,17 +186,22 @@ var AnimeModel = function()
 var UserAnimeList = function()
 {
     var self = this,
-            userAnimeList;
+            animeList;
 
     self.getUserAnimeList = function()
     {
-        return userAnimeList;
+        return animeList;
     };
-    self.setUserAnimeList = function(animeList)
+    self.setUserAnimeList = function(a)
     {
-        userAnimeList = animeList;
+        animeList = a;
+        console.log("Setting user anime list..size: " + animeList.length);
+        apiFunctions.updateAngularElement($("#watchingWrapper"),animeList);
+        angular.element($("#watchingWrapper")).scope().$apply();
+
     };
-};
+},_userAnimeList;
+_userAnimeList = new UserAnimeList();
 
 /**
 *
@@ -321,26 +330,23 @@ var Chiika = function ()
     };
     self.getAnimeList = function (success, error)
     {
-        apiFunctions.callApi(1, success, error, "", true);
+        apiFunctions.callApi(1, this.handleAnimelistCallback, this.handleAnimelistError, "", true);
     };
     self.callApi = function (apiIndex, args, success, error)
     {
         apiFunctions.callApi(apiIndex, success, error, args, false);
     };
+    self.handleAnimelistCallback = function(args)
+    {
+        _userAnimeList.setUserAnimeList(args[0]);
+    };
+    self.handleAnimelistError = function(args)
+    {
+        console.log(args);
+    };
 }, chiika;
-function handleAnimelistCallback(args)
-{
-    console.log(args);
-}
-function handleAnimelistError(args)
-{
-    console.log(args);
-}
-
 chiika = new Chiika();
-//window.ChiikaGetAnimelist(handleAnimelistCallback, handleAnimelistError, "");
-
 $(document).ready(function()
 {
-//    window.ChiikaGetAnimelist(handleAnimelistCallback, handleAnimelistError, "");
+    chiika.getAnimeList();
 });

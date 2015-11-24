@@ -5,7 +5,7 @@
         <div flex="80" class="tabcontentBackground" ng-controller="AnimeListCtrl">
             <md-tabs md-dynamic-height md-center-tabs md-border-bottom class="tabcontentBackground md-whiteframe-z3">
                 <md-tab label="Watching">
-                    <anime-table-dir anime-list="watchingList"></anime-table-dir>
+                    <anime-table-dir id="watchingWrapper" anime-list="watchingList"></anime-table-dir>
                 </md-tab>
                 <md-tab label="Completed ">
                     <anime-table-dir anime-list="completedList"></anime-table-dir>
@@ -25,3 +25,6 @@
     </div>
 
 </div>
+<script>
+function test() { $scope.$apply(); }
+</script>

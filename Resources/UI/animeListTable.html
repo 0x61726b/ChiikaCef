@@ -3,7 +3,7 @@
         <table md-data-table md-row-select="selected">
             <thead md-order="query.order" md-trigger="onorderchange" md-progress="deferred">
                 <tr>
-                    <th order-by="title" name="Title" ></th>
+                    <th order-by="series_title" name="Title" ></th>
                     <th numeric order-by="progress" name="Progress"></th>
                     <th order-by="type.value" name="Type"></th>
                     <th numeric order-by="score.value" name="Score"></th>
@@ -12,7 +12,7 @@
             </thead>
             <tbody>
                 <tr md-auto-select ng-repeat="dessert in animeList.data | orderBy: query.order">
-                    <td>{{dessert.title}}</td>
+                    <td>{{dessert.series_title}}</td>
                     <td>{{dessert.progressString}}</td>
                     <td>{{dessert.type}}</td>
                     <td>{{dessert.score.value}}</td>
